@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
-import Header from "@/app/ui/header";
+import React from "react";
 
 export default function MainComponent() {
   const [inputValue, setInputValue] = useState("");
@@ -21,7 +20,6 @@ export default function MainComponent() {
 
   return (
     <div className="relative bg-white">
-      <Header />
       <div className="relative">
         <Image
           src="/ai-img.jpg"

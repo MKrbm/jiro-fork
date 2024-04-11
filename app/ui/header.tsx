@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -13,7 +15,7 @@ const links = [
   { name: "Manege Rentals", href: "/manege-rentals" },
   { name: "Advertise", href: "/advertise" },
   { name: "Help", href: "/help" },
-  { name: "Sign In", href: "/sing-in" },
+  { name: "Sign In", href: "/sign-in" },
 ];
 
 export default function Header() {
