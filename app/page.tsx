@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import React from "react";
-import Header from "@/app/ui/header";
 
 export default function MainComponent() {
   const [showCurrentLocationOption, setShowCurrentLocationOption] = React
@@ -10,7 +9,6 @@ export default function MainComponent() {
 
   return (
     <div className="relative bg-white">
-      <Header />
       <div className="relative">
         <Image
           src="/ai-img.jpg"
