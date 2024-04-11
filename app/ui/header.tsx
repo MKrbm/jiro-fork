@@ -7,8 +7,8 @@ import clsx from "clsx";
 import { useState } from "react";
 
 const links = [
-  { name: "Buy", href: "/buy" },
-  { name: "Rent", href: "/rent" },
+  { name: "Buy", href: "/homes/for-sale" },
+  { name: "Rent", href: "/homes/for-rent" },
   { name: "Sell", href: "/sell" },
   { name: "Loan", href: "/loan" },
   { name: "Agents", href: "/agents" },
