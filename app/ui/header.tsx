@@ -13,7 +13,7 @@ const links = [
   { name: "Manege Rentals", href: "/manege-rentals" },
   { name: "Advertise", href: "/advertise" },
   { name: "Help", href: "/help" },
-  { name: "Sign In", href: "/sing-in" },
+  { name: "Sign In", href: "/sign-in" },
 ];
 
 export default function Header() {
