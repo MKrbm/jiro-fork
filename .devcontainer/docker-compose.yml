@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  main:
+    container_name: node
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ../:/home/user/project:delegated
+      - type: bind
+        source: ~/.ssh
+        target: /home/user/.ssh
+        read_only: true
+      # - type: bind
+      #   source: ~/.gitconfig
+      #   target: /home/user/.gitconfig
+      #   read_only: true
+    # ports:
+    #   - "8881:8888" #set by yourself
+    cap_add: 
+      - SYS_PTRACE
+    privileged: true
+    security_opt: 
+      - seccomp:unconfined
+    stdin_open: true
+    tty: true
+    working_dir: /home/user/project
