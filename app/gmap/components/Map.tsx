@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { APIProvider, ControlPosition, Map } from '@vis.gl/react-google-maps';
 
-import ControlPanel from './control-panel';
 import { CustomMapControl } from './map-control';
 import MapHandler from './map-handler';
 
@@ -14,25 +13,17 @@ if (!API_KEY) {
 
 export type AutocompleteMode = { id: string; label: string };
 
-const autocompleteModes: Array<AutocompleteMode> = [
-    { id: 'classic', label: 'Google Autocomplete Widget' },
-    { id: 'custom', label: 'Custom Build' },
-    { id: 'custom-hybrid', label: 'Custom w/ Select Widget' }
-];
-
 const containerStyle = {
     width: '100vw',
     height: '100vh',
 };
 
 const center = {
-    lat: 34.7293466708865,
-    lng: 135.49939605607292,
+    lat: 35.6764,
+    lng: 139.65,
 };
 
 const MapComponent = () => {
-    const [selectedAutocompleteMode, setSelectedAutocompleteMode] =
-        useState<AutocompleteMode>(autocompleteModes[0]);
 
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
@@ -41,15 +32,14 @@ const MapComponent = () => {
         <APIProvider apiKey={API_KEY}>
             <Map
                 style={containerStyle}
-                defaultZoom={3}
-                defaultCenter={{ lat: 22.54992, lng: 0 }}
+                defaultZoom={10}
+                defaultCenter={center}
                 gestureHandling={'greedy'}
                 disableDefaultUI={true}
             />
 
             <CustomMapControl
                 controlPosition={ControlPosition.TOP}
-                selectedAutocompleteMode={selectedAutocompleteMode}
                 onPlaceSelect={setSelectedPlace}
             />
 
