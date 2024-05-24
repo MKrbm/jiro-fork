@@ -15,6 +15,7 @@ import {
   ListItemText,
   Box,
   Button,
+  Container,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -39,62 +40,64 @@ export default function Header() {
   };
 
   return (
-    <AppBar position="static" color="default">
-      <Toolbar>
-        {/* Mobile Menu Button */}
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          onClick={handleDrawerToggle}
-          sx={{ display: { md: "none" } }}
-        >
-          <MenuIcon />
-        </IconButton>
+    <AppBar position="fixed" color="default">
+      <Container maxWidth="xl">
+        <Toolbar>
+          {/* Mobile Menu Button */}
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={handleDrawerToggle}
+            sx={{ display: { md: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-        {/* Desktop Links */}
-        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-          {links.slice(0, 5).map((link) => (
-            <Button
-              key={link.name}
-              href={link.href}
-              component={Link}
-              color={pathname === link.href ? "primary" : "inherit"}
-              sx={{ margin: 1 }}
-            >
-              {link.name}
-            </Button>
-          ))}
-        </Box>
+          {/* Desktop Links */}
+          <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1, justifyContent: 'flex-start' }}>
+            {links.slice(0, 5).map((link) => (
+              <Button
+                key={link.name}
+                href={link.href}
+                component={Link}
+                color={pathname === link.href ? "primary" : "inherit"}
+                sx={{ margin: 1 }}
+              >
+                {link.name}
+              </Button>
+            ))}
+          </Box>
 
-        {/* Logo */}
-        <Box sx={{ flexGrow: 1, textAlign: { xs: "center", md: "left" } }}>
-          <Link href="/">
-            <Image
-              src="/jiro-housing.svg"
-              width={1000}
-              height={300}
-              alt="Logo"
-              style={{ height: "48px", width: "auto", cursor: "pointer" }}
-            />
-          </Link>
-        </Box>
+          {/* Logo */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', flexGrow: 1 }}>
+            <Link href="/">
+              <Image
+                src="/jiro-housing.svg"
+                width={1000}
+                height={300}
+                alt="Logo"
+                style={{ height: "48px", width: "auto", cursor: "pointer" }}
+              />
+            </Link>
+          </Box>
 
-        {/* Right Side Links */}
-        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "flex-end" }}>
-          {links.slice(5).map((link) => (
-            <Button
-              key={link.name}
-              href={link.href}
-              component={Link}
-              color={pathname === link.href ? "primary" : "inherit"}
-              sx={{ margin: 1 }}
-            >
-              {link.name}
-            </Button>
-          ))}
-        </Box>
-      </Toolbar>
+          {/* Right Side Links */}
+          <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1, justifyContent: 'flex-end' }}>
+            {links.slice(5).map((link) => (
+              <Button
+                key={link.name}
+                href={link.href}
+                component={Link}
+                color={pathname === link.href ? "primary" : "inherit"}
+                sx={{ margin: 1 }}
+              >
+                {link.name}
+              </Button>
+            ))}
+          </Box>
+        </Toolbar>
+      </Container>
 
       {/* Mobile Drawer Menu */}
       <Drawer
@@ -105,12 +108,13 @@ export default function Header() {
       >
         <List>
           {links.map((link) => (
-            <ListItem button key={link.name} component={Link} href={link.href}>
+            <ListItem button key={link.name} component={Link} href={link.href} >
               <ListItemText primary={link.name} />
             </ListItem>
           ))}
         </List>
       </Drawer>
     </AppBar>
+
   );
 }

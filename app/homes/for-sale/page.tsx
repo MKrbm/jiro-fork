@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <Container disableGutters maxWidth={false} sx={{ height: '100vh', display: 'flex', backgroundColor: 'white' }}>
+    <Container disableGutters maxWidth={false} sx={{paddingTop: "64px", height: '100vh', display: 'flex', backgroundColor: 'white' }}>
       <Box
         sx={{
           flex: 1,
