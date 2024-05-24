@@ -52,19 +52,6 @@ export default function Header() {
           <MenuIcon />
         </IconButton>
 
-        {/* Logo */}
-        <Box sx={{ flexGrow: 1, textAlign: { xs: "center", md: "left" } }}>
-          <Link href="/">
-            <Image
-              src="/jiro-housing.svg"
-              width={1000}
-              height={300}
-              alt="Logo"
-              style={{ height: "48px", width: "auto", cursor: "pointer" }}
-            />
-          </Link>
-        </Box>
-
         {/* Desktop Links */}
         <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
           {links.slice(0, 5).map((link) => (
@@ -78,6 +65,19 @@ export default function Header() {
               {link.name}
             </Button>
           ))}
+        </Box>
+
+        {/* Logo */}
+        <Box sx={{ flexGrow: 1, textAlign: { xs: "center", md: "left" } }}>
+          <Link href="/">
+            <Image
+              src="/jiro-housing.svg"
+              width={1000}
+              height={300}
+              alt="Logo"
+              style={{ height: "48px", width: "auto", cursor: "pointer" }}
+            />
+          </Link>
         </Box>
 
         {/* Right Side Links */}
