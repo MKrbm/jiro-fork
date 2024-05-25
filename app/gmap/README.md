@@ -39,7 +39,3 @@ React-wrapper documentation for [marker](https://visgl.github.io/react-google-ma
             }}></div>
         </AdvancedMarker>
         ```
-
-
-
-

@@ -49,6 +49,15 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 
+## Environment variables
+the path of the API server is defined in the `.env.local` file
+```
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=<Your Google Maps API Key>
+API_URL=http://localhost:5001/api
+```
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` - The Google Maps API key. 
+- `API_URL` - The URL of the API server. In development mode is `http://localhost:5001/api`.
+
 ## Run in docker container
 
 - Assume you have docker installed and working with vscode.
