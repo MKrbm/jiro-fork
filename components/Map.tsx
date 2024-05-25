@@ -1,6 +1,5 @@
 "use client"
 import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
 import {
     APIProvider,
     ControlPosition,
@@ -9,6 +8,7 @@ import {
     Marker,
     Pin
 } from '@vis.gl/react-google-maps';
+import { Map } from '@vis.gl/react-google-maps';
 
 import { CustomMapControl } from './map-control';
 import MapHandler from './map-handler';
@@ -32,7 +32,6 @@ const center: google.maps.LatLngLiteral = {
 };
 
 // Dynamically import the Map component
-const Map = dynamic(() => import('@vis.gl/react-google-maps').then(mod => mod.Map), { ssr: false });
 
 const MapComponent = () => {
     const [selectedPlace, setSelectedPlace] =
