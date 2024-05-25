@@ -19,12 +19,13 @@ export const PlaceAutocompleteClassic = ({ onPlaceSelect }: Props) => {
   useEffect(() => {
     if (!places || !inputRef.current) return;
 
+    // types: ['address'], // Specifying this to specify the type of the place search bar can accepts
     const options = {
-      types: ['address'],
       fields: ['geometry', 'name', 'formatted_address'],
+      language: ['en'], // suggest in Enlgish with higher priority
       componentRestrictions: {
-        country: 'JP',
-        // administrativeArea: '東京都'
+        country: ['JP'],
+        // administrativeArea: '東京都' // Restrict to 東京都 (Tokyo Prefecture)  (This feature is currently not supported see : https://stackoverflow.com/questions/41058742/restrict-autocomplete-google-to-a-specific-administrative-area )
       }
     };
     setPlaceAutocomplete(new places.Autocomplete(inputRef.current, options));

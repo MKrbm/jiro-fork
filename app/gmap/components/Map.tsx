@@ -1,6 +1,14 @@
 "use client"
 import React, { useState } from 'react';
-import { APIProvider, ControlPosition, Map } from '@vis.gl/react-google-maps';
+import dynamic from 'next/dynamic';
+import {
+    APIProvider,
+    ControlPosition,
+    AdvancedMarker,
+    InfoWindow,
+    Marker,
+    Pin
+} from '@vis.gl/react-google-maps';
 
 import { CustomMapControl } from './map-control';
 import MapHandler from './map-handler';
@@ -13,41 +21,58 @@ if (!API_KEY) {
 
 export type AutocompleteMode = { id: string; label: string };
 
-const containerStyle = {
+const containerStyle: React.CSSProperties = {
     width: '100vw',
     height: '100vh',
 };
 
-const center = {
+const center: google.maps.LatLngLiteral = {
     lat: 35.6764,
     lng: 139.65,
 };
 
-const MapComponent = () => {
+// Dynamically import the Map component
+const Map = dynamic(() => import('@vis.gl/react-google-maps').then(mod => mod.Map), { ssr: false });
 
+const MapComponent = () => {
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
 
     return (
         <APIProvider apiKey={API_KEY}>
             <Map
+                mapId={'c0d95ce429ccf25b'} // You can customize the map style by using the mapId.  
                 style={containerStyle}
                 defaultZoom={10}
                 defaultCenter={center}
                 gestureHandling={'greedy'}
                 disableDefaultUI={true}
-            />
-
+            >
+                <Marker
+                    position={center}
+                    clickable={true}
+                    onClick={() => alert('marker was clicked!')}
+                    title={'clickable google.maps.Marker'}
+                    label={'100'}
+                />
+                <AdvancedMarker // Must be used with MapId
+                    position={{ ...center, lng: center.lng - 0.01 }}
+                    title={'AdvancedMarker with customized pin.'}
+                    >
+                    <Pin
+                        background={'#ff2222'}
+                        borderColor={'#a11e1e'}
+                        glyphColor={'#0bb129'} // black color
+                        scale={1.0}
+                        >
+                        <span style={{ color: '#000000', fontWeight: 'bold', fontSize: '0.7rem' }}>1K</span>
+                    </Pin>
+                </AdvancedMarker>
+            </Map>
             <CustomMapControl
                 controlPosition={ControlPosition.TOP}
                 onPlaceSelect={setSelectedPlace}
             />
-
-            {/* <ControlPanel
-                autocompleteModes={autocompleteModes}
-                selectedAutocompleteMode={selectedAutocompleteMode}
-                onAutocompleteModeChange={setSelectedAutocompleteMode}
-            /> */}
 
             <MapHandler place={selectedPlace} />
         </APIProvider>
