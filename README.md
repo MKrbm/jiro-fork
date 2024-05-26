@@ -56,7 +56,9 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=<Your Google Maps API Key>
 API_URL=http://localhost:5001/api
 ```
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` - The Google Maps API key. 
-- `API_URL` - The URL of the API server. In development mode is `http://localhost:5001/api`.
+- `API_URL` - The URL of the API server.  The default value is `http://localhost:5001/api`.
+    - When developing in docker, use ip address of the host machine instead of `localhost`. The port is `5001` by default.
+
 
 ## Run in docker container
 
@@ -64,3 +66,13 @@ API_URL=http://localhost:5001/api
 - Use `remote-containers` extension to open the project in a container.
     - Open command palette and search for `Dev-Containers: Open Folder in Container`
     - Wait for the container to build and open the project in the container
+
+
+# Test with jest
+- For installation check [here](https://nextjs.org/docs/app/building-your-application/testing/jest)
+- Also install `ts-node` to run jest with typescript
+- To use local env variables for test, defined `env.test` file in the root directory of the project. The file is ignored by git.
+- Content of the file is basically the same as `.env.local`.
+
+## Mock
+- By using jest.mock, you can specify how modules should behave when they are required by the parts of your application being tested, allowing for controlled testing scenarios without relying on actual implementations of those modules.
