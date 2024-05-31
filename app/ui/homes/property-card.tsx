@@ -1,32 +1,27 @@
 import React from "react";
 import Image from "next/image";
-
-// export default const PropertyCard = ({ photo, price, size, address, ...otherProps }) => {
-//   return (
-//     <div className={styles.card}>
-//       <img src={photo} alt="Property Photo" className={styles.image} />
-//       <div className={styles.info}>
-//         <p className={styles.price}>{price}</p>
-//         <p className={styles.details}>
-//           {size} sqft - {address}
-//         </p>
-//       </div>
-//     </div>
-//   );
-// };
+import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
 
 export function PropertyCard() {
   return (
-    <div className="w-330 h-270 bg-white rounded-lg shadow-lg overflow-hidden m-2">
-      <Image src="/ai-img.jpg" alt="Property photo" width={330} height={270} className="w-full h-full object-cover"></Image>
-      <div className="p-4">
-        <h3 className="text-lg font-bold text-gray-800">3 Bed, 2 Bath House</h3>
-        <p className="text-sm text-gray-500">123 Main Street, San Francisco, CA 94105</p>
-        <div className="flex items-center mt-4">
-          <span className="text-lg font-bold text-gray-800">$1,200,000</span>
-          <span className="text-sm text-gray-500 ml-2">2,000 sqft</span>
-        </div>
-      </div>
-    </div>
+    <Card sx={{ maxWidth: 330, margin: 2 }}>
+      <CardMedia component="img" height="270" image="/ai-img.jpg" alt="Property photo" />
+      <CardContent>
+        <Typography variant="h6" component="div">
+          3 Bed, 2 Bath House
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          123 Main Street, San Francisco, CA 94105
+        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 2 }}>
+          <Typography variant="h6" component="span">
+            $1,200,000
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ marginLeft: 2 }}>
+            2,000 sqft
+          </Typography>
+        </Box>
+      </CardContent>
+    </Card>
   );
-};
+}

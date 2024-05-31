@@ -1,10 +1,7 @@
-import { Metadata } from "next";
-import { Inter } from "next/font/google";
 import React from "react";
+import { Metadata } from "next";
 import "@/app/globals.css";
-import Header from "@/app/ui/header";
-
-const inter = Inter({ subsets: ["latin"] });
+import ThemeProviderWrapper from "@/app/ThemeProviderWrapper";
 
 export const metadata: Metadata = {
   title: {
@@ -21,10 +18,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Header />
-        {children}
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
+      <body>
+        <ThemeProviderWrapper>
+          {children}
+        </ThemeProviderWrapper>
       </body>
     </html>
   );
 }
+

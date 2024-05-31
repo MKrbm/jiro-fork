@@ -1,9 +1,9 @@
 import React from 'react';
-import { SignInArea } from "@/app/ui/sign-in/sign-in-area";
+import { LogInArea } from "@/app/ui/log-in/log-in-area";
 import { Box } from '@mui/material';
 
 export const metadata = {
-  title: 'Sign in',
+  title: 'Log in',
 };
 
 export default function SignIn() {
@@ -18,7 +18,7 @@ export default function SignIn() {
         backgroundColor: "#f5f5f5",
       }}
     >
-      <SignInArea />
+      <LogInArea />
     </Box>
   );
 }
