@@ -74,6 +74,7 @@ export default function Header() {
             <Link href="/">
               <Image
                 src="/jiro-housing.svg"
+                priority = {false}
                 width={1000}
                 height={300}
                 alt="Logo"
