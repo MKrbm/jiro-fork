@@ -62,7 +62,7 @@ const MapComponent = () => {
         useState<google.maps.places.PlaceResult | null>(null);
     const [cameraData, setCameraData] = useState<MapDetails>(initialMapDetails); // State to store camera data
     const [border, setBorder] = useState<any>({west: 0, south: 0, east: 0, north: 0});
-    console.log("border", border);
+    // console.log("border", border);
 
     const handleCameraChange = useCallback(debounce((e: any) => {
         setCameraData(extractMapDetails(e));
