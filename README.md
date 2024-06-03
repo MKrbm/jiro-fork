@@ -53,10 +53,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 the path of the API server is defined in the `.env.local` file
 ```
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=<Your Google Maps API Key>
-API_URL=http://localhost:5001/api
+NEXT_PUBLIC_API_URL=http://localhost:5001/api
 ```
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` - The Google Maps API key. 
-- `API_URL` - The URL of the API server.  The default value is `http://localhost:5001/api`.
+- `NEXT_PUBLIC_API_URL` - The URL of the API server.  The default value is `http://localhost:5001/api`.
     - When developing in docker, use ip address of the host machine instead of `localhost`. The port is `5001` by default.
 
 
