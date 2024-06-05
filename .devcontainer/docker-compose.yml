@@ -27,4 +27,4 @@ services:
     tty: true
     working_dir: /home/user/project
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - host.docker.internal:host-gateway 
