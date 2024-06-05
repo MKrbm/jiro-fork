@@ -17,7 +17,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
     ```
 
 
-
 ## Install dependencies
 
 First, install the dependencies:
@@ -90,14 +89,23 @@ There are several ways to do this but in this project, I encourage you to use `.
 create `.env.test` and `.env.local` files in the project directory.
 
 and add the following line to both of them.
-```
+
+```.env.test
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=<Your Google Maps API Key>
 NEXT_PUBLIC_API_URL=http://host.docker.internal:5001/api
+```
+```.env.local
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=<Your Google Maps API Key>
+NEXT_PUBLIC_API_URL=http://localhost:5001/api
 ```
 **Note**
 - `NEXT_PUBLIC_API_URL` is the url of the API server. 
 - When developing in docker, use ip address of the host machine instead of `localhost`. The port is `5001` by default.
-- When deploying to the server, use the url of the server (TBD)
+    - Since test will be run in docker, you need to use `host.docker.internal` as the url of the API server.
+    - When running the application, then google-map will be 
+    treated in browser, i.e. you have to use `localhost` as the url of the API server.
+- When deploying to the server, use the unique url of the server (TBD)
+
 
 
 ## Run test
@@ -111,9 +119,15 @@ Currently this test is just for checking the connection of API server and API ro
 
 
 
-# 3. Run the application
+# 3. Develop the application
+
+## Run the application
 ```bash
 npm run dev
 ```
 Currently the url to the google-maps is `localhost:3000/gmap`.
 
+## Google Maps API
+Currently, all of the features are implemented based on 
+[react-google-maps](https://visgl.github.io/react-google-maps/)
+- You may find the several crucial examples in the page.
