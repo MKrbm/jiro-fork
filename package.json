@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@mui/icons-material": "^5.15.19",
     "@react-google-maps/api": "^2.19.3",
     "@types/react-widgets": "^4.4.12",
     "@vis.gl/react-google-maps": "^0.8.3",
