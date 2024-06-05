@@ -1,7 +1,24 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Getting Started
 
+# 1. Prepare environment with docker
+
+## Run in docker container
+
+- Assume you have docker installed and working with vscode.
+- Use `remote-containers` extension to open the project in a container.
+    - Open command palette and search for `Dev-Containers: Open Folder in Container`
+    - Wait for the container to build and open the project in the container
+- If you don't use vscode, comment out the following lines in `docker-compose.yml`
+    ```
+    # ports:
+    #   - "3000:3000" #set by yourself
+    ```
+
+
+
+## Install dependencies
 
 First, install the dependencies:
 
@@ -49,30 +66,54 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 
-## Environment variables
-the path of the API server is defined in the `.env.local` file
+
+# 2. Test with jest
+Before starting development, ensure that the tests are set up and running correctly.
+
+## Installation
+All dependencies should be already installed with `npm install`.
+If not, check the following 
+> - For installation check [here](https://nextjs.org/docs/app/building-your-application/testing/jest)
+> - Also install `ts-node` to run jest with typescript
+
+## Create a Google Maps API Key
+
+To integrate Google Maps features into your application, you will need a Google Maps API Key. Follow these steps to create one:
+
+1. Go to the [Google Cloud Platform Console](https://console.cloud.google.com/).
+2. Create a new project or select an existing project.
+
+## Add API key to `.env.test` and `.env.local`
+Once you have your API key, add it to your project's environment variables. 
+There are several ways to do this but in this project, I encourage you to use `.env.local` for development and `.env.test` for testing.
+
+create `.env.test` and `.env.local` files in the project directory.
+
+and add the following line to both of them.
 ```
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=<Your Google Maps API Key>
-NEXT_PUBLIC_API_URL=http://localhost:5001/api
+NEXT_PUBLIC_API_URL=http://host.docker.internal:5001/api
 ```
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` - The Google Maps API key. 
-- `NEXT_PUBLIC_API_URL` - The URL of the API server.  The default value is `http://localhost:5001/api`.
-    - When developing in docker, use ip address of the host machine instead of `localhost`. The port is `5001` by default.
+**Note**
+- `NEXT_PUBLIC_API_URL` is the url of the API server. 
+- When developing in docker, use ip address of the host machine instead of `localhost`. The port is `5001` by default.
+- When deploying to the server, use the url of the server (TBD)
 
 
-## Run in docker container
+## Run test
+```bash
+npm test
+```
+Please confirm that the test is working properly by checking the output of the command.
+Currently this test is just for checking the connection of API server and API route.
 
-- Assume you have docker installed and working with vscode.
-- Use `remote-containers` extension to open the project in a container.
-    - Open command palette and search for `Dev-Containers: Open Folder in Container`
-    - Wait for the container to build and open the project in the container
+**Check `./services/__integration__/listingsApi.test.tsx` for more details.**
 
 
-# Test with jest
-- For installation check [here](https://nextjs.org/docs/app/building-your-application/testing/jest)
-- Also install `ts-node` to run jest with typescript
-- To use local env variables for test, defined `env.test` file in the root directory of the project. The file is ignored by git.
-- Content of the file is basically the same as `.env.local`.
 
-## Mock
-- By using jest.mock, you can specify how modules should behave when they are required by the parts of your application being tested, allowing for controlled testing scenarios without relying on actual implementations of those modules.
+# 3. Run the application
+```bash
+npm run dev
+```
+Currently the url to the google-maps is `localhost:3000/gmap`.
+
