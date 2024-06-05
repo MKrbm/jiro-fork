@@ -11,6 +11,8 @@ interface InfoWindowProps {
 }
 
 const InfoWindow: React.FC<InfoWindowProps> = ({ listing }) => {
+	const price: string = `¥${listing.rentfee.toLocaleString()}`
+
 	return (
 		<Card sx={{
 			width: 260,
@@ -34,7 +36,7 @@ const InfoWindow: React.FC<InfoWindowProps> = ({ listing }) => {
 				</Typography>
 				<Box sx={{ display: 'flex', alignItems: 'center', marginTop: 2 }}>
 					<Typography variant="h6" component="span">
-						¥{listing.rentfee}
+						{price}
 					</Typography>
 					<Typography variant="body2" color="text.secondary" sx={{ marginLeft: 2 }}>
 						2,000 sqft
