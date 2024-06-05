@@ -18,9 +18,11 @@ describe('API Accessibility Test', () => {
 
 // http://localhost:5001/api/db/listings?center_lat=36.589813&center_lon=139.887848&width=0.01&height=0.1&price=false
 describe('fetchListings Integration Test', () => {
+    
+    // asakusa
     it('should fetch listings from the API', async () => {
-        const centerLat = 35.659416;
-        const centerLon = 139.406754;
+        const centerLat = 35.7186;
+        const centerLon = 139.7959;
         const width = 0.1;
         const height = 0.1;
         const withPrice = false;
@@ -32,50 +34,50 @@ describe('fetchListings Integration Test', () => {
     });
 
 
+    // Sky-tree
     it('check field of listings when withPrice is false', async () => {
-        const centerLat = 35.659416;
-        const centerLon = 139.406754;
+        const centerLat = 35.7101;
+        const centerLon = 139.8107;
         const width = 0.1;
         const height = 0.1;
         const withPrice = false;
 
         const listings = await fetchListings(centerLat, centerLon, width, height, withPrice);
-        if (listings.length > 0) {
-            expect(listings[0]).toHaveProperty('addressid');
-            expect(listings[0]).toHaveProperty('city');
-            expect(listings[0]).toHaveProperty('country');
-            expect(listings[0]).toHaveProperty('latitude');
-            expect(listings[0]).toHaveProperty('longitude');
-            expect(listings[0]).toHaveProperty('postalcode');
-            expect(listings[0]).toHaveProperty('state');
-            expect(listings[0]).toHaveProperty('streetaddress');
-            expect(listings[0]).toHaveProperty('streetaddress2');
-            expect(listings[0]).not.toHaveProperty('managefee');
-            expect(listings[0]).not.toHaveProperty('rentfee');
-        }
+        expect(listings.length).toBeGreaterThan(0);
+        expect(listings[0]).toHaveProperty('addressid');
+        expect(listings[0]).toHaveProperty('city');
+        expect(listings[0]).toHaveProperty('country');
+        expect(listings[0]).toHaveProperty('latitude');
+        expect(listings[0]).toHaveProperty('longitude');
+        expect(listings[0]).toHaveProperty('postalcode');
+        expect(listings[0]).toHaveProperty('state');
+        expect(listings[0]).toHaveProperty('streetaddress');
+        expect(listings[0]).toHaveProperty('streetaddress2');
+        expect(listings[0]).not.toHaveProperty('managefee');
+        expect(listings[0]).not.toHaveProperty('rentfee');
     });
 
     it('check field of listings when withPrice is true', async () => {
-        const centerLat = 35.659416;
-        const centerLon = 139.406754;
-        const width = 0.1;
-        const height = 0.1;
+        const centerLat = 35.7101;
+        const centerLon = 139.8107;
+        const width = 0.005;
+        const height = 0.005;
         const withPrice = true;
 
         const listings = await fetchListings(centerLat, centerLon, width, height, withPrice);
-        if (listings.length > 0) {
-            expect(listings[0]).toHaveProperty('addressid');
-            expect(listings[0]).toHaveProperty('city');
-            expect(listings[0]).toHaveProperty('country');
-            expect(listings[0]).toHaveProperty('latitude');
-            expect(listings[0]).toHaveProperty('longitude');
-            expect(listings[0]).toHaveProperty('postalcode');
-            expect(listings[0]).toHaveProperty('state');
-            expect(listings[0]).toHaveProperty('streetaddress');
-            expect(listings[0]).toHaveProperty('streetaddress2');
-            expect(listings[0]).toHaveProperty('managefee');
-            expect(listings[0]).toHaveProperty('rentfee');
-        }
+
+        expect(listings.length).toBeGreaterThan(0);
+        expect(listings[0]).toHaveProperty('addressid');
+        expect(listings[0]).toHaveProperty('city');
+        expect(listings[0]).toHaveProperty('country');
+        expect(listings[0]).toHaveProperty('latitude');
+        expect(listings[0]).toHaveProperty('longitude');
+        expect(listings[0]).toHaveProperty('postalcode');
+        expect(listings[0]).toHaveProperty('state');
+        expect(listings[0]).toHaveProperty('streetaddress');
+        expect(listings[0]).toHaveProperty('streetaddress2');
+        expect(listings[0]).toHaveProperty('managefee');
+        expect(listings[0]).toHaveProperty('rentfee');
     });
 
 
