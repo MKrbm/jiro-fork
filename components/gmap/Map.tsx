@@ -30,11 +30,6 @@ const containerStyle: React.CSSProperties = {
     height: 'calc(100vh - 32px)',
 };
 
-const center: google.maps.LatLngLiteral = {
-    lat: 35.6764,
-    lng: 139.65,
-};
-
 const interval = 200;
 
 function debounce(func: any, delay: number) {
@@ -47,16 +42,6 @@ function debounce(func: any, delay: number) {
     };
 }
 // Dynamically import the Map component
-
-// Create a debounced function that updates camera data
-
-const initialMapDetails: MapDetails = {
-    center_lat: center.lat,
-    center_lng: center.lng,
-    width: 0.02,
-    height: 0.02,
-};
-
 
 // Function to convert degrees to radians
 const toRadians = (degrees: number) => {
@@ -75,7 +60,7 @@ const calculateHorizontalDistance = (lat: number, lon1: number, lon2: number) =>
 	return Math.abs(distance);
 };
 
-const MapComponent = () => {
+const MapComponent = (initialMapDetails: MapDetails) => {
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
     const [cameraData, setCameraData] = useState<MapDetails>(initialMapDetails); // State to store camera data
@@ -90,7 +75,6 @@ const MapComponent = () => {
 		setScale(horizontalDistance);
 	}, [border]);
 
-
     // console.log("border", border);
 
     const handleCameraChange = useCallback(debounce((e: any) => {
@@ -98,15 +82,9 @@ const MapComponent = () => {
         setBorder(e.detail.bounds);
     }, interval), []);
 
-
-    const markerPosition1 = {
-        lat: border.south,
-        lng: border.west,
-    };
-
-    const markerPosition2 = {
-        lat: border.north,
-        lng: border.east 
+    const center: google.maps.LatLngLiteral = {
+        lat: initialMapDetails.center_lat,
+        lng: initialMapDetails.center_lng,
     };
 
     return (
@@ -121,21 +99,9 @@ const MapComponent = () => {
                 disableDefaultUI={true}
                 onClick={(e) => console.log(e.detail.latLng)}
             >
-                <Marker
-                    position={markerPosition2}
-                    clickable={true}
-                    onClick={() => alert('marker was clicked!')}
-                    title={'clickable google.maps.Marker'}
-                />
-                <Marker
-                    position={markerPosition1}
-                    clickable={true}
-                    onClick={() => alert('marker was clicked!')}
-                    title={'clickable google.maps.Marker'}
-                />
                 <CustomPin
                     background={'#ff2222'}
-                    hoveredColor={'#a11e1e'}
+                    hoveredColor={'#1ea11e'}
                     glyphColor={'#fff'} // black color
                     scale={scale}
                     mapDetails={cameraData}
