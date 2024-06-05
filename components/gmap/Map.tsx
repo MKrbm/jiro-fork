@@ -27,7 +27,7 @@ export type AutocompleteMode = { id: string; label: string };
 
 const containerStyle: React.CSSProperties = {
     width: '100%',
-    height: 'calc(100vh - 32px)',
+    height: 'calc(100vh - 64px)',
 };
 
 const interval = 200;

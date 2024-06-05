@@ -5,7 +5,7 @@ import Map from "@/components/gmap/Map";
 
 export default function Home() {
   return (
-    <Box title="Google Maps App" sx={{ mt: 4 }}>
+    <Box title="Google Maps App">
       <Map center_lat={35.6803} center_lng={139.7690} width={1} height={1} />
     </Box>
   );
