@@ -26,3 +26,5 @@ services:
     stdin_open: true
     tty: true
     working_dir: /home/user/project
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
