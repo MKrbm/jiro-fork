@@ -18,10 +18,8 @@ const InfoWindow: React.FC<InfoWindowProps> = ({ listing }) => {
 			width: 260,
 			margin: 2,
 			position: 'absolute',
-			transform: 'translate(-50%, -105%)',
-			zIndex: 1000,
+			transform: 'translate(-50%, -115%)',
 			background: 'white',
-			padding: 2,
 			borderRadius: 2,
 			boxShadow: 3,
 		}}
