@@ -26,12 +26,7 @@ export default function MainComponent() {
   const [inputValue, setInputValue] = useState("");
   const [showCurrentLocationOption, setShowCurrentLocationOption] = useState(false);
 
-  const handleSearchClick = () => {
-    console.log("Current input value:", inputValue);
-    // Here you can perform further actions with the input value if needed
-  };
-
-  const handleLocationClick = (e) => {
+  const handleLocationClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent default event behavior
     if (window.confirm("Are you sure you want to use your current location?")) {
       setInputValue("Current Location");

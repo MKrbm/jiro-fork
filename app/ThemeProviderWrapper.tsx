@@ -19,6 +19,7 @@ export default function ThemeProviderWrapper({ children }: { children: React.Rea
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Header />
+      <div style={{ width: '100%', height: '64px' }}></div>
       <main> {/* Adjust marginTop based on the height of your Header */}
         {children}
       </main>
