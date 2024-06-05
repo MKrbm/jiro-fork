@@ -3,6 +3,7 @@ import { Box, Typography } from '@mui/material';
 import { AdvancedMarker } from '@vis.gl/react-google-maps';
 import { fetchListings, Listing } from '@/services/listingsApi';
 import { MapDetails } from './types/Camera';
+import InfoWindow from './ui/info-window';
 
 interface CustomPinProps {
 	background: string;
@@ -19,6 +20,8 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 
 	const [listings, setListings] = useState<ListingWithRent[]>([]);
 	const [hoveredPin, setHoveredPin] = useState<number | null>(null); // State to track hovered pin
+	const [selectedListing, setSelectedListing] = useState<ListingWithRent | null>(null);
+	const [displayInfoWindow, setDisplayInfoWindow] = useState<number | null>(null);
 
 	useEffect(() => {
 		if (mapDetails) {
@@ -38,10 +41,43 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 		}
 	}, [mapDetails]);
 
-	const handlePinClick = (listing: ListingWithRent) => {
+	const handlePinClick = (listing: ListingWithRent, index: number) => {
 		console.log('Pin clicked:', listing);
-		console.log(scale);
+		// console.log(scale);
+
+		// Set selected listing and position
+		setSelectedListing(listing);
+		setDisplayInfoWindow(index);
 	};
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (!(event.target as HTMLElement).closest('.info-window, .marker-pin') && selectedListing) {
+				setSelectedListing(null);
+			}
+		};
+
+		window.addEventListener('click', handleClickOutside);
+
+		return () => {
+			window.removeEventListener('click', handleClickOutside);
+		};
+	}, [selectedListing]);
+
+	useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+        if (!(event.target as HTMLElement).closest('.info-window, .marker-pin') && displayInfoWindow !== null) {
+            setDisplayInfoWindow(null);
+        }
+    };
+
+    window.addEventListener('click', handleClickOutside);
+
+    return () => {
+        window.removeEventListener('click', handleClickOutside);
+    };
+}, [displayInfoWindow]);
+
 
 	// Function to render a pin displaying the price
 	const renderPricePin = (price: string, index: number) => (
@@ -49,17 +85,16 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 			sx={{
 				position: 'relative',
 				display: 'inline-block',
-				zIndex: hoveredPin === index ? 1000 : 'auto', // Change zIndex on hover
 				'&:hover': {
-          '& .price-pin': { // Increase specificity
-            backgroundColor: `${hoveredColor}`,
-            transition: 'background-color 0.3s',
-          },
-          '& .pin-triangle': { // Increase specificity
-            borderTopColor: `${hoveredColor}`,
-            transition: 'border-top-color 0.3s',
-          },
-        },
+					'& .price-pin': { // Increase specificity
+						backgroundColor: `${hoveredColor}`,
+						transition: 'background-color 0.3s',
+					},
+					'& .pin-triangle': { // Increase specificity
+						borderTopColor: `${hoveredColor}`,
+						transition: 'border-top-color 0.3s',
+					},
+				},
 				'& .price-pin': {
 					backgroundColor: background,
 					borderRadius: '15px',
@@ -117,7 +152,6 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 				borderRadius: '50%',
 				width: 16,
 				height: 16,
-				zIndex: hoveredPin === index ? 1000 : 'auto', // Change zIndex on hover
 				'&:hover': {
 					border: `1px solid ${hoveredColor}`, // Change to desired hover color
 					transition: 'border-color 0.3s',
@@ -151,10 +185,17 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 					<AdvancedMarker
 						key={listing.addressid}
 						position={{ lat: listing.latitude, lng: listing.longitude }}
-						onClick={() => handlePinClick(listing)}
-						zIndex={hoveredPin === index ? 1000 : index} // Apply dynamic zIndex
+						onClick={() => handlePinClick(listing, index)}
+						zIndex={hoveredPin === index || displayInfoWindow === index ? 1000 : index} // マーカーにホバーしているまたは情報ウィンドウが表示されている場合は最前面に表示
+						className="marker-pin"
 					>
 						{index < 40 || scale < 25000 ? renderPricePin(price, index) : renderMarkPin(index)}
+
+						{selectedListing && selectedListing.addressid === listing.addressid && (
+							<InfoWindow
+								listing={listing}
+							/>
+						)}
 					</AdvancedMarker>
 				);
 			})}
