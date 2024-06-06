@@ -36,6 +36,11 @@ export default function MainComponent() {
     }
   };
 
+  const handleSearchClick = (e: React.MouseEvent) => { 
+    e.preventDefault(); // Prevent default event behavior
+    console.log("Search button clicked with value:", inputValue);
+  }
+
   return (
     <Box position="relative" bgcolor="white">
       <Image
