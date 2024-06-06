@@ -17,7 +17,7 @@ services:
       #   target: /home/user/.gitconfig
       #   read_only: true
     # ports:
-    #   - "8881:8888" #set by yourself
+    #   - "3000:3000" #set by yourself
     cap_add: 
       - SYS_PTRACE
     privileged: true
@@ -27,4 +27,4 @@ services:
     tty: true
     working_dir: /home/user/project
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - host.docker.internal:host-gateway 
