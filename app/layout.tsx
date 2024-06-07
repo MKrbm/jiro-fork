@@ -2,6 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 import "@/app/globals.css";
 import ThemeProviderWrapper from "@/app/ThemeProviderWrapper";
+import { SignInModalProvider } from "@/app/ui/context/sign-in-modal-context";
 
 export const metadata: Metadata = {
   title: {
@@ -22,9 +23,11 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body>
-        <ThemeProviderWrapper>
-          {children}
-        </ThemeProviderWrapper>
+        <SignInModalProvider>
+          <ThemeProviderWrapper>
+            {children}
+          </ThemeProviderWrapper>
+        </SignInModalProvider>
       </body>
     </html>
   );

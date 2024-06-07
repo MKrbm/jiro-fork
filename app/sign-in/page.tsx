@@ -1,24 +1,25 @@
 import React from 'react';
 import { SignInArea } from "@/app/ui/sign-in/sign-in-area";
-import { Box } from '@mui/material';
-
-export const metadata = {
-  title: 'Sign in',
-};
+import { Box, Modal } from '@mui/material';
+import { useSignInModal } from '@/app/ui/context/sign-in-modal-context';
 
 export default function SignIn() {
+  const { isModalOpen, closeModal } = useSignInModal();
+
   return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f5f5f5",
-      }}
-    >
-      <SignInArea />
-    </Box>
+    <Modal open={isModalOpen} onClose={closeModal}>
+      <Box
+        sx={{
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.5)",
+        }}
+      >
+        <SignInArea />
+      </Box>
+    </Modal>
   );
 }

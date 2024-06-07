@@ -18,6 +18,8 @@ import {
   Container,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useSignInModal } from "./context/sign-in-modal-context";
+import SignIn from "@/app/sign-in/page";
 
 const links = [
   { name: "Buy", href: "/homes/for-sale" },
@@ -34,12 +36,14 @@ const links = [
 export default function Header() {
   const pathname = usePathname();
   const [showMenu, setShowMenu] = useState(false);
+  const { openModal } = useSignInModal();
 
   const handleDrawerToggle = () => {
     setShowMenu(!showMenu);
   };
 
   return (
+    <>
     <AppBar position="fixed" color="default">
       <Container maxWidth="xl">
         <Toolbar>
@@ -74,7 +78,7 @@ export default function Header() {
             <Link href="/">
               <Image
                 src="/jiro-housing.svg"
-                priority = {false}
+                priority={false}
                 width={1000}
                 height={300}
                 alt="Logo"
@@ -85,17 +89,31 @@ export default function Header() {
 
           {/* Right Side Links */}
           <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1, justifyContent: 'flex-end' }}>
-            {links.slice(5).map((link) => (
-              <Button
-                key={link.name}
-                href={link.href}
-                component={Link}
-                color={pathname === link.href ? "primary" : "inherit"}
-                sx={{ margin: 1 }}
-              >
-                {link.name}
-              </Button>
-            ))}
+            {links.slice(5).map((link) =>
+              link.name === "Sign In" ? (
+                <Button
+                  key={link.name}
+                  onClick={() => {
+                    openModal();
+                    console.log("Button clicked");
+                  }}
+                  color={pathname === link.href ? "primary" : "inherit"}
+                  sx={{ margin: 1 }}
+                >
+                  {link.name}
+                </Button>
+              ) : (
+                <Button
+                  key={link.name}
+                  href={link.href}
+                  component={Link}
+                  color={pathname === link.href ? "primary" : "inherit"}
+                  sx={{ margin: 1 }}
+                >
+                  {link.name}
+                </Button>
+              )
+            )}
           </Box>
         </Toolbar>
       </Container>
@@ -117,5 +135,7 @@ export default function Header() {
       </Drawer>
     </AppBar>
 
+    <SignIn />
+</>
   );
 }
