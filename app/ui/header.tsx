@@ -18,7 +18,7 @@ import {
   Container,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useSignInModal } from "./context/sign-in-modal-context";
+import { useSignInModal } from "../context/sign-in-modal-context";
 import SignIn from "@/app/sign-in/page";
 
 const links = [

@@ -2,7 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 import "@/app/globals.css";
 import ThemeProviderWrapper from "@/app/ThemeProviderWrapper";
-import { SignInModalProvider } from "@/app/ui/context/sign-in-modal-context";
+import { SignInModalProvider } from "@/app/context/sign-in-modal-context";
 
 export const metadata: Metadata = {
   title: {

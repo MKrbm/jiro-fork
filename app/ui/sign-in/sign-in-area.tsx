@@ -5,7 +5,7 @@ import Link from "next/link";
 import React, { useState } from 'react';
 import { Box, Button, Container, TextField, Typography, useMediaQuery, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useSignInModal } from '../context/sign-in-modal-context';
+import { useSignInModal } from '../../context/sign-in-modal-context';
 
 export function SignInArea() {
   const { isModalOpen, closeModal }: { isModalOpen: boolean, closeModal: () => void } = useSignInModal();
