@@ -30,7 +30,6 @@ const links = [
   { name: "Manage Rentals", href: "/manage-rentals" },
   { name: "Advertise", href: "/advertise" },
   { name: "Help", href: "/help" },
-  { name: "Sign In", href: "/sign-in" },
 ];
 
 export default function Header() {
@@ -44,9 +43,9 @@ export default function Header() {
 
   return (
     <>
-    <AppBar position="fixed" color="default">
+    <AppBar position="fixed" color="default" sx={{ height: 64 }}>
       <Container maxWidth="xl">
-        <Toolbar>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
           {/* Mobile Menu Button */}
           <IconButton
             edge="start"
@@ -90,20 +89,7 @@ export default function Header() {
           {/* Right Side Links */}
           <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1, justifyContent: 'flex-end' }}>
             {links.slice(5).map((link) =>
-              link.name === "Sign In" ? (
-                <Button
-                  key={link.name}
-                  onClick={() => {
-                    openModal();
-                    console.log("Button clicked");
-                  }}
-                  color={pathname === link.href ? "primary" : "inherit"}
-                  sx={{ margin: 1 }}
-                >
-                  {link.name}
-                </Button>
-              ) : (
-                <Button
+              <Button
                   key={link.name}
                   href={link.href}
                   component={Link}
@@ -112,9 +98,18 @@ export default function Header() {
                 >
                   {link.name}
                 </Button>
-              )
             )}
           </Box>
+          <Button
+            onClick={() => {
+              openModal();
+              console.log("Button clicked");
+            }}
+            color="inherit"
+            sx={{ margin: 1 }}
+          >
+            Sign In
+          </Button>
         </Toolbar>
       </Container>
 
