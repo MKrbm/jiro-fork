@@ -1,21 +1,39 @@
 import React from "react";
 import Image from "next/image";
 import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
+import { fetchListings, Listing } from '@/services/listingsApi';
 
-export function PropertyCard() {
+interface ListingWithRent extends Listing {
+	rentfee: number;
+}
+
+interface InfoWindowProps {
+	listing: ListingWithRent;
+}
+
+export const PropertyCard: React.FC<InfoWindowProps> = ({ listing }) => {
+	const price: string = `¥${listing.rentfee.toLocaleString()}`
+
   return (
-    <Card sx={{ maxWidth: 330, margin: 2 }}>
-      <CardMedia component="img" height="270" image="/ai-img.jpg" alt="Property photo" />
+    <Card sx={{
+      marginTop: '10px',
+      background: 'white',
+      maxWidth: 260,
+      borderRadius: 2,
+      boxShadow: 3,
+    }}
+    >
+      <CardMedia component="img" height="180" image="/ai-img.jpg" alt="Property photo" />
       <CardContent>
         <Typography variant="h6" component="div">
-          3 Bed, 2 Bath House
+          {listing.streetaddress}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          123 Main Street, San Francisco, CA 94105
+          Available From: {new Date(listing.availablefrom).toLocaleDateString()}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 2 }}>
           <Typography variant="h6" component="span">
-            $1,200,000
+            {price}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ marginLeft: 2 }}>
             2,000 sqft
@@ -24,4 +42,4 @@ export function PropertyCard() {
       </CardContent>
     </Card>
   );
-}
+};
