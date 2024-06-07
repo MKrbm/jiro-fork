@@ -122,7 +122,7 @@ export default function Header() {
       >
         <List>
           {links.map((link) => (
-            <ListItem button key={link.name} component={Link} href={link.href} >
+            <ListItem key={link.name} component={Link} href={link.href} >
               <ListItemText primary={link.name} />
             </ListItem>
           ))}

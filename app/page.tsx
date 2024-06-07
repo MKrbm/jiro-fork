@@ -42,12 +42,12 @@ export default function MainComponent() {
   }
 
   return (
-    <Box position="relative" bgcolor="white">
+    <Box position="relative" bgcolor="white" height='calc(100vh - 64px)'>
       <Image
         src="/ai-img.jpg"
         width={1024}
         height={1024}
-        style={{ width: '100%', height: '100vh', objectFit: 'cover' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         alt="Screenshots of the dashboard project showing desktop version"
       />
       <Box position="absolute" width="100%" textAlign="center" top="50%" sx={{ transform: 'translateY(-50%)' }}>
