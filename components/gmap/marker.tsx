@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 import { AdvancedMarker } from '@vis.gl/react-google-maps';
 import { fetchListings, Listing } from '@/services/listingsApi';
 import { MapDetails } from './types/Camera';
-import InfoWindow from './ui/info-window';
+import { PropertyCard } from '@/app/ui/homes/property-card';
 
 interface CustomPinProps {
 	background: string;
@@ -21,7 +21,7 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 	const [listings, setListings] = useState<ListingWithRent[]>([]);
 	const [hoveredPin, setHoveredPin] = useState<number | null>(null); // State to track hovered pin
 	const [selectedListing, setSelectedListing] = useState<ListingWithRent | null>(null);
-	const [displayInfoWindow, setDisplayInfoWindow] = useState<number | null>(null);
+	const [displayPropertyCard, setDisplayPropertyCard] = useState<number | null>(null);
 
 	useEffect(() => {
 		if (mapDetails) {
@@ -47,7 +47,7 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 
 		// Set selected listing and position
 		setSelectedListing(listing);
-		setDisplayInfoWindow(index);
+		setDisplayPropertyCard(index);
 	};
 
 	useEffect(() => {
@@ -66,8 +66,8 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 
 	useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-        if (!(event.target as HTMLElement).closest('.info-window, .marker-pin') && displayInfoWindow !== null) {
-            setDisplayInfoWindow(null);
+        if (!(event.target as HTMLElement).closest('.info-window, .marker-pin') && displayPropertyCard !== null) {
+            setDisplayPropertyCard(null);
         }
     };
 
@@ -76,7 +76,7 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
     return () => {
         window.removeEventListener('click', handleClickOutside);
     };
-}, [displayInfoWindow]);
+}, [displayPropertyCard]);
 
 
 	// Function to render a pin displaying the price
@@ -186,15 +186,21 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 						key={listing.addressid}
 						position={{ lat: listing.latitude, lng: listing.longitude }}
 						onClick={() => handlePinClick(listing, index)}
-						zIndex={hoveredPin === index || displayInfoWindow === index ? 1000 : index} // マーカーにホバーしているまたは情報ウィンドウが表示されている場合は最前面に表示
+						zIndex={hoveredPin === index || displayPropertyCard === index ? 1000 : index} // マーカーにホバーしているまたは情報ウィンドウが表示されている場合は最前面に表示
 						className="marker-pin"
 					>
 						{index < 40 || scale < 25000 ? renderPricePin(price, index) : renderMarkPin(index)}
 
 						{selectedListing && selectedListing.addressid === listing.addressid && (
-							<InfoWindow
+							<Box sx={{
+								width: 260,
+								position: 'absolute',
+								transform: 'translate(-35%, -110%)',
+							}}>
+								<PropertyCard
 								listing={listing}
 							/>
+							</Box>
 						)}
 					</AdvancedMarker>
 				);
