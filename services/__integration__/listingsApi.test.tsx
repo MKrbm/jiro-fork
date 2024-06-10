@@ -16,7 +16,6 @@ describe('API Accessibility Test', () => {
     });
 });
 
-// http://localhost:5001/api/db/listings?center_lat=36.589813&center_lon=139.887848&width=0.01&height=0.1&price=false
 describe('fetchListings Integration Test', () => {
     
     // asakusa
