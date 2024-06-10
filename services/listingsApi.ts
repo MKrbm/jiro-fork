@@ -12,7 +12,8 @@ export interface Listing {
     longitude: number;
     postalcode: string;
     priceid: number;
-    state: string;
+    // state: string;
+    ward: string;
     streetaddress: string;
     streetaddress2: string | null;
     securitydeposit?: number;

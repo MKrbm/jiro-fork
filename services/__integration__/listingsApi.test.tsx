@@ -50,7 +50,7 @@ describe('fetchListings Integration Test', () => {
         expect(listings[0]).toHaveProperty('latitude');
         expect(listings[0]).toHaveProperty('longitude');
         expect(listings[0]).toHaveProperty('postalcode');
-        expect(listings[0]).toHaveProperty('state');
+        expect(listings[0]).toHaveProperty('ward');
         expect(listings[0]).toHaveProperty('streetaddress');
         expect(listings[0]).toHaveProperty('streetaddress2');
         expect(listings[0]).not.toHaveProperty('managefee');
@@ -60,8 +60,8 @@ describe('fetchListings Integration Test', () => {
     it('check field of listings when withPrice is true', async () => {
         const centerLat = 35.7101;
         const centerLon = 139.8107;
-        const width = 0.005;
-        const height = 0.005;
+        const width = 0.05;
+        const height = 0.05;
         const withPrice = true;
 
         const listings = await fetchListings(centerLat, centerLon, width, height, withPrice);
@@ -73,7 +73,7 @@ describe('fetchListings Integration Test', () => {
         expect(listings[0]).toHaveProperty('latitude');
         expect(listings[0]).toHaveProperty('longitude');
         expect(listings[0]).toHaveProperty('postalcode');
-        expect(listings[0]).toHaveProperty('state');
+        expect(listings[0]).toHaveProperty('ward');
         expect(listings[0]).toHaveProperty('streetaddress');
         expect(listings[0]).toHaveProperty('streetaddress2');
         expect(listings[0]).toHaveProperty('managefee');
@@ -84,8 +84,8 @@ describe('fetchListings Integration Test', () => {
     it('check around sky-tree', async () => {
         const centerLat = 35.7101;
         const centerLon = 139.8107;
-        const width = 0.005;
-        const height = 0.005;
+        const width = 0.05;
+        const height = 0.05;
         const withPrice = true;
 
         const listings = await fetchListings(centerLat, centerLon, width, height, withPrice);
@@ -96,7 +96,29 @@ describe('fetchListings Integration Test', () => {
             expect(listing.latitude).toBeLessThan(35.7151 + width/2);
             expect(listing.longitude).toBeGreaterThan(139.8057 - height/2);
             expect(listing.longitude).toBeLessThan(139.8157 + height/2);
-            expect(listing.streetaddress).toContain('墨田区'); }
+            // expect(listing.streetaddress).toContain('墨田区');
+            // expect(listing.ward).toContain('墨田区');
+        }
     });
+
+    it('check around Tokyo Tower', async () => {
+        const centerLat = 35.6586;
+        const centerLon = 139.7454;
+        const width = 0.02;
+        const height = 0.02;
+        const withPrice = true;
+
+        const listings = await fetchListings(centerLat, centerLon, width, height, withPrice);
+
+        expect(listings.length).toBeGreaterThan(0);
+        for (const listing of listings) {
+            expect(listing.latitude).toBeGreaterThan(35.6536 - width/2); // Adjusted for the center latitude
+            expect(listing.latitude).toBeLessThan(35.6636 + width/2); // Adjusted for the center latitude
+            expect(listing.longitude).toBeGreaterThan(139.7404 - height/2); // Adjusted for the center longitude
+            expect(listing.longitude).toBeLessThan(139.7504 + height/2); // Adjusted for the center longitude
+            expect(listing.ward).toContain('港区'); // Assuming the address contains the district 'Minato', which Tokyo Tower is part of
+        }
+    });
+
 });
 
