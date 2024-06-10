@@ -18,6 +18,8 @@ import {
   Container,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useSignInModal } from "../context/sign-in-modal-context";
+import SignIn from "@/app/sign-in/page";
 
 const links = [
   { name: "Buy", href: "/homes/for-sale" },
@@ -28,21 +30,22 @@ const links = [
   { name: "Manage Rentals", href: "/manage-rentals" },
   { name: "Advertise", href: "/advertise" },
   { name: "Help", href: "/help" },
-  { name: "Sign In", href: "/sign-in" },
 ];
 
 export default function Header() {
   const pathname = usePathname();
   const [showMenu, setShowMenu] = useState(false);
+  const { openModal } = useSignInModal();
 
   const handleDrawerToggle = () => {
     setShowMenu(!showMenu);
   };
 
   return (
-    <AppBar position="fixed" color="default">
+    <>
+    <AppBar position="fixed" color="default" sx={{ height: 64 }}>
       <Container maxWidth="xl">
-        <Toolbar>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
           {/* Mobile Menu Button */}
           <IconButton
             edge="start"
@@ -74,6 +77,7 @@ export default function Header() {
             <Link href="/">
               <Image
                 src="/jiro-housing.svg"
+                priority={false}
                 width={1000}
                 height={300}
                 alt="Logo"
@@ -84,18 +88,28 @@ export default function Header() {
 
           {/* Right Side Links */}
           <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1, justifyContent: 'flex-end' }}>
-            {links.slice(5).map((link) => (
+            {links.slice(5).map((link) =>
               <Button
-                key={link.name}
-                href={link.href}
-                component={Link}
-                color={pathname === link.href ? "primary" : "inherit"}
-                sx={{ margin: 1 }}
-              >
-                {link.name}
-              </Button>
-            ))}
+                  key={link.name}
+                  href={link.href}
+                  component={Link}
+                  color={pathname === link.href ? "primary" : "inherit"}
+                  sx={{ margin: 1 }}
+                >
+                  {link.name}
+                </Button>
+            )}
           </Box>
+          <Button
+            onClick={() => {
+              openModal();
+              console.log("Button clicked");
+            }}
+            color="inherit"
+            sx={{ margin: 1 }}
+          >
+            Sign In
+          </Button>
         </Toolbar>
       </Container>
 
@@ -108,7 +122,7 @@ export default function Header() {
       >
         <List>
           {links.map((link) => (
-            <ListItem button key={link.name} component={Link} href={link.href} >
+            <ListItem key={link.name} component={Link} href={link.href} >
               <ListItemText primary={link.name} />
             </ListItem>
           ))}
@@ -116,5 +130,7 @@ export default function Header() {
       </Drawer>
     </AppBar>
 
+    <SignIn />
+</>
   );
 }

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     APIProvider,
     ControlPosition,
@@ -26,13 +26,8 @@ if (!API_KEY) {
 export type AutocompleteMode = { id: string; label: string };
 
 const containerStyle: React.CSSProperties = {
-    width: '100vw',
-    height: '100vh',
-};
-
-const center: google.maps.LatLngLiteral = {
-    lat: 35.6764,
-    lng: 139.65,
+    width: '100%',
+    height: 'calc(100vh - 64px)',
 };
 
 const interval = 200;
@@ -48,36 +43,48 @@ function debounce(func: any, delay: number) {
 }
 // Dynamically import the Map component
 
-// Create a debounced function that updates camera data
-
-const initialMapDetails: MapDetails = {
-    center_lat: center.lat,
-    center_lng: center.lng,
-    width: 0.02,
-    height: 0.02,
+// Function to convert degrees to radians
+const toRadians = (degrees: number) => {
+	return degrees * (Math.PI / 180);
 };
 
-const MapComponent = () => {
+// Function to calculate distance between two longitude points at a given latitude
+const calculateHorizontalDistance = (lat: number, lon1: number, lon2: number) => {
+	const R = 6371000; // Radius of the Earth in meters
+	const dLon = toRadians(lon2 - lon1);
+	const avgLat = toRadians(lat);
+
+	const x = dLon * Math.cos(avgLat);
+	const distance = R * x;
+
+	return Math.abs(distance);
+};
+
+const MapComponent = (initialMapDetails: MapDetails) => {
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
     const [cameraData, setCameraData] = useState<MapDetails>(initialMapDetails); // State to store camera data
     const [border, setBorder] = useState<any>({west: 0, south: 0, east: 0, north: 0});
-    console.log("border", border);
+    const [scale, setScale] = useState<number>(0);
+
+    useEffect(() => {
+		const { west, east, north, south } = border;
+		// Average latitude for the horizontal distance calculation
+		const avgLat = (north + south) / 2;
+		const horizontalDistance = calculateHorizontalDistance(avgLat, west, east);
+		setScale(horizontalDistance);
+	}, [border]);
+
+    // console.log("border", border);
 
     const handleCameraChange = useCallback(debounce((e: any) => {
         setCameraData(extractMapDetails(e));
         setBorder(e.detail.bounds);
     }, interval), []);
 
-
-    const markerPosition1 = {
-        lat: border.south,
-        lng: border.west,
-    };
-
-    const markerPosition2 = {
-        lat: border.north,
-        lng: border.east 
+    const center: google.maps.LatLngLiteral = {
+        lat: initialMapDetails.center_lat,
+        lng: initialMapDetails.center_lng,
     };
 
     return (
@@ -92,23 +99,11 @@ const MapComponent = () => {
                 disableDefaultUI={true}
                 onClick={(e) => console.log(e.detail.latLng)}
             >
-                <Marker
-                    position={markerPosition2}
-                    clickable={true}
-                    onClick={() => alert('marker was clicked!')}
-                    title={'clickable google.maps.Marker'}
-                />
-                <Marker
-                    position={markerPosition1}
-                    clickable={true}
-                    onClick={() => alert('marker was clicked!')}
-                    title={'clickable google.maps.Marker'}
-                />
                 <CustomPin
                     background={'#ff2222'}
-                    borderColor={'#a11e1e'}
-                    glyphColor={'#0bb129'} // black color
-                    scale={1.2}
+                    hoveredColor={'#1ea11e'}
+                    glyphColor={'#fff'} // black color
+                    scale={scale}
                     mapDetails={cameraData}
                 />
             </Map>

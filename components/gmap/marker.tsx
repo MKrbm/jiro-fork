@@ -1,71 +1,212 @@
 import React, { useEffect, useState } from 'react';
-import { Pin, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { Box, Typography } from '@mui/material';
+import { AdvancedMarker } from '@vis.gl/react-google-maps';
 import { fetchListings, Listing } from '@/services/listingsApi';
 import { MapDetails } from './types/Camera';
+import { PropertyCard } from '@/app/ui/homes/property-card';
 
 interface CustomPinProps {
-    background: string;
-    borderColor: string;
-    glyphColor: string;
-    scale: number;
-    mapDetails: MapDetails;
+	background: string;
+	hoveredColor: string;
+	glyphColor: string;
+	scale: number;
+	mapDetails: MapDetails;
 }
 
-const CustomPin: React.FC<CustomPinProps> = ({ background, borderColor, glyphColor, scale, mapDetails }) => {
-    interface ListingWithRent extends Listing {
-        rentfee: number;
-    }
+const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphColor, scale, mapDetails }) => {
+	interface ListingWithRent extends Listing {
+		rentfee: number;
+	}
 
-    const [listings, setListings] = useState<ListingWithRent[]>([]);
+	const [listings, setListings] = useState<ListingWithRent[]>([]);
+	const [hoveredPin, setHoveredPin] = useState<number | null>(null); // State to track hovered pin
+	const [selectedListing, setSelectedListing] = useState<ListingWithRent | null>(null);
+	const [displayPropertyCard, setDisplayPropertyCard] = useState<number | null>(null);
 
-    const fontSize = scale * 0.5;
+	useEffect(() => {
+		if (mapDetails) {
+			fetchListings(
+				mapDetails.center_lat,
+				mapDetails.center_lng,
+				mapDetails.width,
+				mapDetails.height,
+				true
+			).then((fetchedListings) => {
+				const listingsWithRent = fetchedListings.map(listing => ({
+					...listing,
+					rentfee: listing.rentfee ?? 0 // Ensure rentfee is a number
+				}));
+				setListings(listingsWithRent);
+			}).catch(console.error);
+		}
+	}, [mapDetails]);
 
-    useEffect(() => {
-        if (mapDetails) {
-            fetchListings(
-                mapDetails.center_lat,
-                mapDetails.center_lng,
-                mapDetails.width,
-                mapDetails.height,
-                true
-            ).then((fetchedListings) => {
-                const listingsWithRent = fetchedListings.map(listing => ({
-                    ...listing,
-                    rentfee: listing.rentfee ?? 0 // Ensure rentfee is a number
-                }));
-                setListings(listingsWithRent);
-            }).catch(console.error);
+	const handlePinClick = (listing: ListingWithRent, index: number) => {
+		console.log('Pin clicked:', listing);
+		// console.log(scale);
+
+		// Set selected listing and position
+		setSelectedListing(listing);
+		setDisplayPropertyCard(index);
+	};
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (!(event.target as HTMLElement).closest('.info-window, .marker-pin') && selectedListing) {
+				setSelectedListing(null);
+			}
+		};
+
+		window.addEventListener('click', handleClickOutside);
+
+		return () => {
+			window.removeEventListener('click', handleClickOutside);
+		};
+	}, [selectedListing]);
+
+	useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+        if (!(event.target as HTMLElement).closest('.info-window, .marker-pin') && displayPropertyCard !== null) {
+            setDisplayPropertyCard(null);
         }
-    }, [mapDetails]);
+    };
 
-    const component = (
-        <>
-            {listings.map((listing, index) => {
-                const price = `${listing.rentfee / 1000}K¥`;
+    window.addEventListener('click', handleClickOutside);
 
-                return (
-                    <AdvancedMarker
-                        key={listing.addressid}
-                        position={{ lat: listing.latitude, lng: listing.longitude }}
-                    >    
-                        <Pin
-                            key={listing.addressid}
-                            background={background}
-                            borderColor={borderColor}
-                            glyphColor={glyphColor}
-                            scale={scale}
-                        >
-                            <span style={{ color: '#000000', fontWeight: 'bold', fontSize: '1rem' }}>{index}</span>
-                        </Pin>
-                    </AdvancedMarker>
-                );
-            })}
-        </>
-    );
-            
-    console.log("component", component);
+    return () => {
+        window.removeEventListener('click', handleClickOutside);
+    };
+}, [displayPropertyCard]);
 
-    return component;
+
+	// Function to render a pin displaying the price
+	const renderPricePin = (price: string, index: number) => (
+		<Box
+			sx={{
+				position: 'relative',
+				display: 'inline-block',
+				'&:hover': {
+					'& .price-pin': { // Increase specificity
+						backgroundColor: `${hoveredColor}`,
+						transition: 'background-color 0.3s',
+					},
+					'& .pin-triangle': { // Increase specificity
+						borderTopColor: `${hoveredColor}`,
+						transition: 'border-top-color 0.3s',
+					},
+				},
+				'& .price-pin': {
+					backgroundColor: background,
+					borderRadius: '15px',
+					width: 60,
+					height: 20,
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow effect
+				},
+				'& .pin-triangle': {
+					position: 'absolute',
+					bottom: -6,
+					left: '50%',
+					transform: 'translateX(-50%)',
+					width: 0,
+					height: 0,
+					borderLeft: '4px solid transparent',
+					borderRight: '4px solid transparent',
+					borderTop: `6px solid ${background}`,
+				},
+			}}
+			onMouseEnter={() => setHoveredPin(index)} // Set hovered pin
+			onMouseLeave={() => setHoveredPin(null)} // Reset hovered pin
+		>
+			{/* Main box displaying the price */}
+			<Box className="price-pin">
+				<Typography
+					variant="body2"
+					sx={{
+						color: `${glyphColor}`,
+						fontWeight: 'thin',
+						padding: '0 0.5rem',
+					}}
+				>
+					{price}
+				</Typography>
+			</Box>
+			{/* Triangle at the bottom */}
+			<Box className="pin-triangle" />
+		</Box>
+	);
+
+	// Function to render a circular mark pin
+	const renderMarkPin = (index: number) => (
+		<Box
+			className="marker-outer"
+			sx={{
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				backgroundColor: `${glyphColor}`,
+				border: `1px solid ${background}`,
+				boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)', // Shadow effect
+				borderRadius: '50%',
+				width: 16,
+				height: 16,
+				'&:hover': {
+					border: `1px solid ${hoveredColor}`, // Change to desired hover color
+					transition: 'border-color 0.3s',
+					'& .marker-inner': {
+						background: `${hoveredColor}`, // Change to desired hover color
+						transition: 'background-color 0.3s',
+					},
+				},
+			}}
+			onMouseEnter={() => setHoveredPin(index)} // Set hovered pin
+			onMouseLeave={() => setHoveredPin(null)} // Reset hovered pin
+		>
+			<Box
+				className="marker-inner"
+				sx={{
+					backgroundColor: `${background}`,
+					borderRadius: '50%',
+					width: 8,
+					height: 8,
+				}}
+			/>
+		</Box>
+	);
+
+	return (
+		<>
+			{listings.map((listing, index) => {
+				const price = `¥${listing.rentfee / 1000}K`;
+
+				return (
+					<AdvancedMarker
+						key={listing.addressid}
+						position={{ lat: listing.latitude, lng: listing.longitude }}
+						onClick={() => handlePinClick(listing, index)}
+						zIndex={hoveredPin === index || displayPropertyCard === index ? 1000 : index} // マーカーにホバーしているまたは情報ウィンドウが表示されている場合は最前面に表示
+						className="marker-pin"
+					>
+						{index < 40 || scale < 25000 ? renderPricePin(price, index) : renderMarkPin(index)}
+
+						{selectedListing && selectedListing.addressid === listing.addressid && (
+							<Box sx={{
+								width: 260,
+								position: 'absolute',
+								transform: 'translate(-35%, -110%)',
+							}}>
+								<PropertyCard
+								listing={listing}
+							/>
+							</Box>
+						)}
+					</AdvancedMarker>
+				);
+			})}
+		</>
+	);
 };
 
 export default CustomPin;

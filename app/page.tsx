@@ -26,12 +26,7 @@ export default function MainComponent() {
   const [inputValue, setInputValue] = useState("");
   const [showCurrentLocationOption, setShowCurrentLocationOption] = useState(false);
 
-  const handleSearchClick = () => {
-    console.log("Current input value:", inputValue);
-    // Here you can perform further actions with the input value if needed
-  };
-
-  const handleLocationClick = (e) => {
+  const handleLocationClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent default event behavior
     if (window.confirm("Are you sure you want to use your current location?")) {
       setInputValue("Current Location");
@@ -41,13 +36,18 @@ export default function MainComponent() {
     }
   };
 
+  const handleSearchClick = (e: React.MouseEvent) => { 
+    e.preventDefault(); // Prevent default event behavior
+    console.log("Search button clicked with value:", inputValue);
+  }
+
   return (
-    <Box position="relative" bgcolor="white">
+    <Box position="relative" bgcolor="white" height='calc(100vh - 64px)'>
       <Image
         src="/ai-img.jpg"
         width={1024}
         height={1024}
-        style={{ width: '100%', height: '100vh', objectFit: 'cover' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         alt="Screenshots of the dashboard project showing desktop version"
       />
       <Box position="absolute" width="100%" textAlign="center" top="50%" sx={{ transform: 'translateY(-50%)' }}>
