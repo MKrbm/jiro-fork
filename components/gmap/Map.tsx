@@ -45,35 +45,37 @@ function debounce(func: any, delay: number) {
 
 // Function to convert degrees to radians
 const toRadians = (degrees: number) => {
-	return degrees * (Math.PI / 180);
+    return degrees * (Math.PI / 180);
 };
 
 // Function to calculate distance between two longitude points at a given latitude
 const calculateHorizontalDistance = (lat: number, lon1: number, lon2: number) => {
-	const R = 6371000; // Radius of the Earth in meters
-	const dLon = toRadians(lon2 - lon1);
-	const avgLat = toRadians(lat);
+    const R = 6371000; // Radius of the Earth in meters
+    const dLon = toRadians(lon2 - lon1);
+    const avgLat = toRadians(lat);
 
-	const x = dLon * Math.cos(avgLat);
-	const distance = R * x;
+    const x = dLon * Math.cos(avgLat);
+    const distance = R * x;
 
-	return Math.abs(distance);
+    return Math.abs(distance);
 };
 
 const MapComponent = (initialMapDetails: MapDetails) => {
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
     const [cameraData, setCameraData] = useState<MapDetails>(initialMapDetails); // State to store camera data
-    const [border, setBorder] = useState<any>({west: 0, south: 0, east: 0, north: 0});
+    const [border, setBorder] = useState<any>({ west: 0, south: 0, east: 0, north: 0 });
     const [scale, setScale] = useState<number>(0);
 
+    const customPinRef = useRef(null);
+
     useEffect(() => {
-		const { west, east, north, south } = border;
-		// Average latitude for the horizontal distance calculation
-		const avgLat = (north + south) / 2;
-		const horizontalDistance = calculateHorizontalDistance(avgLat, west, east);
-		setScale(horizontalDistance);
-	}, [border]);
+        const { west, east, north, south } = border;
+        // Average latitude for the horizontal distance calculation
+        const avgLat = (north + south) / 2;
+        const horizontalDistance = calculateHorizontalDistance(avgLat, west, east);
+        setScale(horizontalDistance);
+    }, [border]);
 
     // console.log("border", border);
 
@@ -98,8 +100,16 @@ const MapComponent = (initialMapDetails: MapDetails) => {
                 gestureHandling={'greedy'}
                 disableDefaultUI={true}
                 onClick={(e) => console.log(e.detail.latLng)}
+                onBoundsChanged={(e) => {
+                    // console.log(e.detail.bounds);
+                    // CustomPin の handleClickOutside 関数を呼び出す
+                    if (customPinRef.current) {
+                        customPinRef.current.handleClickOutside();
+                    }
+                }}
             >
                 <CustomPin
+                    ref={customPinRef}
                     background={'#ff2222'}
                     hoveredColor={'#1ea11e'}
                     glyphColor={'#fff'} // black color

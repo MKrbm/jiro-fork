@@ -4,20 +4,37 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export interface Listing {
     addressid: number;
+    area: number;
     availablefrom: string;
+    buildingage: number,
+    buildingimageurl: string,
+    buildinginfoid: number,
+    buildingname: string,
+    buildingstructure: string,
+    buildingtype: string,
     city: string;
     country: string;
+    descriptionid: number;
+    direction: string;
+    floor: number;
+    floorplan: string;
+    floorsabove: number;
+    floorsbelow: number;
     gratuityfee: number;
+    houseinfoid: number;
+    housename: string;
     latitude: number;
     longitude: number;
+    managefee: number;
+    otherpotentialfees: string;
     postalcode: string;
+    prefecture: string;
     priceid: number;
-    state: string;
+    rentfee: number;
+    securitydeposit: number;
     streetaddress: string;
-    streetaddress2: string | null;
-    securitydeposit?: number;
-    managefee?: number;
-    rentfee?: number;
+    streetaddress2: string;
+    ward: string;
 }
 
 export const fetchListings = async (
