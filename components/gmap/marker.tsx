@@ -13,7 +13,12 @@ interface CustomPinProps {
 	mapDetails: MapDetails;
 }
 
-const CustomPin: React.FC<CustomPinProps> = forwardRef(({ background, hoveredColor, glyphColor, scale, mapDetails }, ref) => {
+export interface CustomPinRef {
+	handleClickOutside: () => void;
+}
+
+const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
+	const { background, hoveredColor, glyphColor, scale, mapDetails } = props;
 
 	interface ListingWithRent extends Listing {
 		rentfee: number;
@@ -23,6 +28,14 @@ const CustomPin: React.FC<CustomPinProps> = forwardRef(({ background, hoveredCol
 	const [hoveredPin, setHoveredPin] = useState<number | null>(null); // State to track hovered pin
 	const [selectedListing, setSelectedListing] = useState<ListingWithRent | null>(null);
 	const [displayPropertyCard, setDisplayPropertyCard] = useState<number | null>(null);
+
+	useImperativeHandle(ref, () => ({
+		handleClickOutside() {
+			setSelectedListing(null);
+			setDisplayPropertyCard(null);
+			console.log("handleClickOutside called");
+		}
+	}));
 
 
 	useEffect(() => {
@@ -72,14 +85,6 @@ const CustomPin: React.FC<CustomPinProps> = forwardRef(({ background, hoveredCol
 		};
 	}, [selectedListing, displayPropertyCard]);
 
-	// Expose the handleClickOutside function to the parent component
-	useImperativeHandle(ref, () => ({
-		handleClickOutside() {
-			setSelectedListing(null);
-			setDisplayPropertyCard(null);
-			// console.log('handleClickOutside called'); // Log the function call
-		}
-	}));
 
 
 
@@ -211,6 +216,6 @@ const CustomPin: React.FC<CustomPinProps> = forwardRef(({ background, hoveredCol
 			})}
 		</>
 	);
-},);
+});
 
 export default CustomPin;
