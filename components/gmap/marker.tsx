@@ -73,12 +73,14 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 				) {
 					setSelectedListing(null);
 					setDisplayPropertyCard(null);
+					console.log('Event: Outside Interaction'); // Log the event name
 				}
 			} else {
 				// If event.target is not an HTMLElement (e.g., resize event)
 				if (selectedListing || displayPropertyCard !== null) {
 					setSelectedListing(null);
 					setDisplayPropertyCard(null);
+					console.log('Event: Outside Interaction'); // Log the event name
 				}
 			}
 		};
