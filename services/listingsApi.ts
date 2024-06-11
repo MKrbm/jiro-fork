@@ -20,10 +20,13 @@ export interface Listing {
     floorplan: string;
     floorsabove: number;
     floorsbelow: number;
+    gratuityfee: number;
     houseinfoid: number;
     housename: string;
     latitude: number;
     longitude: number;
+    managefee: number;
+    otherpotentialfees: string;
     postalcode: string;
     prefecture: string;
     priceid: number;
