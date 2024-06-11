@@ -12,7 +12,7 @@ import { Map } from '@vis.gl/react-google-maps';
 
 import { CustomMapControl } from './map-control';
 import MapHandler from './map-handler';
-import CustomPin from './marker';
+import CustomPin, { CustomPinRef } from './marker';
 
 import { MapDetails, extractMapDetails } from './types/Camera';
 import { AnyARecord } from 'dns';
@@ -67,14 +67,14 @@ const MapComponent = (initialMapDetails: MapDetails) => {
     const [border, setBorder] = useState<any>({ west: 0, south: 0, east: 0, north: 0 });
     const [scale, setScale] = useState<number>(0);
 
-    const customPinRef = useRef(null);
+    const customPinRef = useRef<CustomPinRef>(null);
 
     useEffect(() => {
         const { west, east, north, south } = border;
         // Average latitude for the horizontal distance calculation
         const avgLat = (north + south) / 2;
-        const horizontalDistance = calculateHorizontalDistance(avgLat, west, east);
-        setScale(horizontalDistance);
+				const horizontalDistance = calculateHorizontalDistance(avgLat, west, east);
+				setScale(horizontalDistance);
     }, [border]);
 
     // console.log("border", border);
@@ -105,6 +105,7 @@ const MapComponent = (initialMapDetails: MapDetails) => {
                     // console.log(e.detail.bounds);
                     // CustomPin の handleClickOutside 関数を呼び出す
                     if (customPinRef.current) {
+                        console.log("customPinRef.current", customPinRef.current);
                         customPinRef.current.handleClickOutside();
                     }
                 }}
