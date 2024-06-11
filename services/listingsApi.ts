@@ -26,6 +26,9 @@ export interface Listing {
     longitude: number;
     postalcode: string;
     prefecture: string;
+    priceid: number;
+    rentfee: number;
+    securitydeposit: number;
     streetaddress: string;
     streetaddress2: string;
     ward: string;
