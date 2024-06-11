@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { AdvancedMarker } from '@vis.gl/react-google-maps';
 import { fetchListings, Listing } from '@/services/listingsApi';
@@ -13,7 +13,8 @@ interface CustomPinProps {
 	mapDetails: MapDetails;
 }
 
-const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphColor, scale, mapDetails }) => {
+const CustomPin: React.FC<CustomPinProps> = forwardRef(({ background, hoveredColor, glyphColor, scale, mapDetails }, ref) => {
+
 	interface ListingWithRent extends Listing {
 		rentfee: number;
 	}
@@ -22,6 +23,7 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 	const [hoveredPin, setHoveredPin] = useState<number | null>(null); // State to track hovered pin
 	const [selectedListing, setSelectedListing] = useState<ListingWithRent | null>(null);
 	const [displayPropertyCard, setDisplayPropertyCard] = useState<number | null>(null);
+
 
 	useEffect(() => {
 		if (mapDetails) {
@@ -43,40 +45,42 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 
 	const handlePinClick = (listing: ListingWithRent, index: number) => {
 		console.log('Pin clicked:', listing);
-		// console.log(scale);
-
 		// Set selected listing and position
 		setSelectedListing(listing);
 		setDisplayPropertyCard(index);
 	};
 
 	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (!(event.target as HTMLElement).closest('.info-window, .marker-pin') && selectedListing) {
+		const handleOutsideInteraction = (event: Event) => {
+			if (
+				!(event.target as HTMLElement).closest('.info-window, .marker-pin') &&
+				(selectedListing || displayPropertyCard !== null)
+			) {
 				setSelectedListing(null);
+				setDisplayPropertyCard(null);
+				console.log('Event: Outside Interaction'); // Log the event name
 			}
 		};
 
-		window.addEventListener('click', handleClickOutside);
+		// Add listeners for click and resize events
+		window.addEventListener('click', handleOutsideInteraction);
+		window.addEventListener('resize', handleOutsideInteraction);
 
 		return () => {
-			window.removeEventListener('click', handleClickOutside);
+			window.removeEventListener('click', handleOutsideInteraction);
+			window.removeEventListener('resize', handleOutsideInteraction);
 		};
-	}, [selectedListing]);
+	}, [selectedListing, displayPropertyCard]);
 
-	useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-        if (!(event.target as HTMLElement).closest('.info-window, .marker-pin') && displayPropertyCard !== null) {
-            setDisplayPropertyCard(null);
-        }
-    };
+	// Expose the handleClickOutside function to the parent component
+	useImperativeHandle(ref, () => ({
+		handleClickOutside() {
+			setSelectedListing(null);
+			setDisplayPropertyCard(null);
+			// console.log('handleClickOutside called'); // Log the function call
+		}
+	}));
 
-    window.addEventListener('click', handleClickOutside);
-
-    return () => {
-        window.removeEventListener('click', handleClickOutside);
-    };
-}, [displayPropertyCard]);
 
 
 	// Function to render a pin displaying the price
@@ -193,13 +197,13 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 
 						{selectedListing && selectedListing.addressid === listing.addressid && (
 							<Box sx={{
-								width: 260,
+								width: 240,
 								position: 'absolute',
 								transform: 'translate(-35%, -110%)',
 							}}>
 								<PropertyCard
-								listing={listing}
-							/>
+									listing={listing}
+								/>
 							</Box>
 						)}
 					</AdvancedMarker>
@@ -207,6 +211,6 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, hoveredColor, glyphCo
 			})}
 		</>
 	);
-};
+},);
 
 export default CustomPin;
