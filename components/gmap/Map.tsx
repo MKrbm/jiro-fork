@@ -99,6 +99,7 @@ const MapComponent = (initialMapDetails: MapDetails) => {
                 defaultCenter={center}
                 gestureHandling={'greedy'}
                 disableDefaultUI={true}
+                clickableIcons={false}
                 onClick={(e) => console.log(e.detail.latLng)}
                 onBoundsChanged={(e) => {
                     // console.log(e.detail.bounds);
@@ -112,7 +113,7 @@ const MapComponent = (initialMapDetails: MapDetails) => {
                     ref={customPinRef}
                     background={'#ff2222'}
                     hoveredColor={'#1ea11e'}
-                    glyphColor={'#fff'} // black color
+                    glyphColor={'#fff'} 
                     scale={scale}
                     mapDetails={cameraData}
                 />
