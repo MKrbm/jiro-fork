@@ -1,7 +1,8 @@
 'use client'
 import React, { useRef, useEffect, useState } from 'react';
-import {Box, Input, TextField} from '@mui/material';
+import { Box, Input, TextField } from '@mui/material';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 import styles from './styles.module.css';
 
@@ -16,14 +17,15 @@ export const PlaceAutocomplete = ({ onPlaceSelect }: Props) => {
     useState<google.maps.places.Autocomplete | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const places = useMapsLibrary('places');
+  const router = useRouter(); // Use the useRouter hook
 
   useEffect(() => {
     if (!places || !inputRef.current) return;
 
-    // types: ['address'], // Specifying this to specify the type of the place search bar can accepts
     const options = {
-      fields: ['geometry', 'name', 'formatted_address'],
+      fields: ['address_components'], // NOTE: Return in specific format when specified. Check available fields https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult  
       language: ['en'], // suggest in Enlgish with higher priority
+      types: ["(cities)"], //NOTE: list of types https://developers.google.com/maps/documentation/places/web-service/supported_types and https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service
       componentRestrictions: {
         country: ['JP'],
       }
@@ -35,9 +37,19 @@ export const PlaceAutocomplete = ({ onPlaceSelect }: Props) => {
     if (!placeAutocomplete) return;
 
     placeAutocomplete.addListener('place_changed', () => {
-      onPlaceSelect(placeAutocomplete.getPlace());
+      const autocompleted_place = placeAutocomplete.getPlace();
+      onPlaceSelect(autocompleted_place);
+      console.log("place", autocompleted_place);
+      if (autocompleted_place && autocompleted_place["address_components"]) {
+        const city_name = autocompleted_place["address_components"][0]["long_name"].replace(/ /g, '-');
+        const url = `/gmap/${encodeURIComponent(city_name)}`;
+        router.push(url); // Navigate to the page with city_name
+      }
+      else{
+        console.warn("placeAutocomplete.getPlace() is null");
+      }
     });
-  }, [onPlaceSelect, placeAutocomplete]);
+  }, [onPlaceSelect, placeAutocomplete, router]);
 
   return (
     <Box className={styles['autocomplete-container']} style={{ width: '100%' }}>

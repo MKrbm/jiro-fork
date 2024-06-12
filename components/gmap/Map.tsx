@@ -8,10 +8,11 @@ import { Map } from '@vis.gl/react-google-maps';
 import { CustomMapControl } from './map-control';
 import MapHandler from './map-handler';
 import CustomPin, { CustomPinRef } from './marker';
-import { MapDetails, extractMapDetails } from './types/Camera';
+import { MapDetails, extractMapDetails, Location } from './types/Camera';
+import { useMapsLibrary } from '@vis.gl/react-google-maps';
 
 
-const interval = 100;
+// const interval = 100;
 const API_KEY: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 if (!API_KEY) {
     throw new Error("GOOGLE_MAPS_API_KEY is not set");
@@ -25,17 +26,17 @@ const containerStyle: React.CSSProperties = {
 };
 
 
-function debounce(func: any, delay: number) {
-    let timerId: NodeJS.Timeout;
-    return (...args: any) => {
-        clearTimeout(timerId);
-        timerId = setTimeout(() => {
-            func(...args);
-        }, delay);
-    };
-}
+// function debounce(func: any, delay: number) {
+//     let timerId: NodeJS.Timeout;
+//     return (...args: any) => {
+//         clearTimeout(timerId);
+//         timerId = setTimeout(() => {
+//             func(...args);
+//         }, delay);
+//     };
+// }
 
-const MapComponent = (initialMapDetails: MapDetails) => {
+const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapDetails, location: Location | null }) => {
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
     const [cameraData, setCameraData] = useState<MapDetails>(initialMapDetails); // State to store camera data

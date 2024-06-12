@@ -4,6 +4,7 @@ export type MapDetails = {
     width: number;
     height: number;
 };
+export type Location = string;
 
 export function extractMapDetails(data: any): MapDetails {
     if (!data?.center?.lat || !data?.center?.lng || !data?.bounds?.south || !data?.bounds?.west || !data?.bounds?.north || !data?.bounds?.east) {
