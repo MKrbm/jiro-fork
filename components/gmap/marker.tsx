@@ -33,7 +33,7 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 		handleClickOutside() {
 			setSelectedListing(null);
 			setDisplayPropertyCard(null);
-			console.log("handleClickOutside called");
+			// console.log("handleClickOutside called");
 		}
 	}));
 
@@ -207,8 +207,7 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 						zIndex={hoveredPin === index || displayPropertyCard === index ? 1000 : index} // マーカーにホバーしているまたは情報ウィンドウが表示されている場合は最前面に表示
 						className="marker-pin"
 					>
-						{index < 40 || scale < 25000 ? renderPricePin(price, index) : renderMarkPin(index)}
-
+						{index < 40 || scale > 12 ? renderPricePin(price, index) : renderMarkPin(index)}
 						{selectedListing && selectedListing.addressid === listing.addressid && (
 							<Box sx={{
 								width: 240,
