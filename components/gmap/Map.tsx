@@ -1,9 +1,6 @@
 "use client"
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import {
-    APIProvider,
-    ControlPosition,
-} from '@vis.gl/react-google-maps';
+import { ControlPosition, useMap } from '@vis.gl/react-google-maps';
 import { Map } from '@vis.gl/react-google-maps';
 import { CustomMapControl } from './map-control';
 import MapHandler from './map-handler';
@@ -11,12 +8,7 @@ import CustomPin, { CustomPinRef } from './marker';
 import { MapDetails, extractMapDetails, Location } from './types/Camera';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
 
-
 // const interval = 100;
-const API_KEY: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
-if (!API_KEY) {
-    throw new Error("GOOGLE_MAPS_API_KEY is not set");
-}
 
 export type AutocompleteMode = { id: string; label: string };
 
@@ -46,6 +38,49 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
         scale: 0,
         mapDetails: initialMapDetails
     });
+    const places = useMapsLibrary('places');
+    const gmap = useMap();
+    const inputRef = useRef<HTMLInputElement>(null);
+    // var service = new places.PlacesService(gmap);
+    // console.log("service", service);
+
+    useEffect(() => {
+        if (!places || !location) {
+            return;
+        };
+        const request : google.maps.places.FindPlaceFromQueryRequest = {
+            fields: ['ALL'],
+            query: location,
+            locationBias: {
+                lat: 35.6852,
+                lng: 139.7528,
+            },
+        };
+        var service = new places.PlacesService(gmap);
+        const callback1 = (results: google.maps.places.PlaceResult[], status: google.maps.places.PlacesServiceStatus) => {
+            console.log("results", results);
+            console.log("status", status);
+            setSelectedPlace(results[0]);
+        }
+        service.findPlaceFromQuery(request, callback1);
+    }, [places]);
+
+
+    useEffect(() => {
+        console.log("places", places);
+        console.log("inputRef", inputRef);
+        if (!places || !inputRef.current) return;
+
+        const options = {
+            fields: ['address_components'], 
+            language: ['en'], 
+            types: ["(cities)"], 
+            componentRestrictions: {
+                country: ['JP'],
+            }
+        };
+        console.log(new places.Autocomplete(inputRef.current, options));
+    }, [places]);
 
     const center: google.maps.LatLngLiteral = {
         lat: initialMapDetails.center_lat,
@@ -80,13 +115,13 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
 
 
     return (
-        <APIProvider apiKey={API_KEY}>
+			<>
             <Map
                 onCameraChanged={handleCameraChange}
                 mapId={'c0d95ce429ccf25b'} // You can customize the map style by using the mapId.  
                 style={containerStyle}
                 defaultZoom={10}
-                defaultCenter={center}
+                // defaultCenter={center}
                 gestureHandling={'greedy'}
                 disableDefaultUI={true}
                 clickableIcons={false}
@@ -116,7 +151,7 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
             />
 
             <MapHandler place={selectedPlace} />
-        </APIProvider>
+			</>
     );
 };
 

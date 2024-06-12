@@ -25,7 +25,8 @@ export const PlaceAutocomplete = ({ onPlaceSelect }: Props) => {
     const options = {
       fields: ['address_components'], // NOTE: Return in specific format when specified. Check available fields https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult  
       language: ['en'], // suggest in Enlgish with higher priority
-      types: ["(cities)"], //NOTE: list of types https://developers.google.com/maps/documentation/places/web-service/supported_types and https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service
+      // types: ["subway_station", "train_station", "university", "administrative_area_level_3", "locality", "administrative_area_level_2", "administrative_area_level_1"], //NOTE: list of types https://developers.google.com/maps/documentation/places/web-service/supported_types and https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service
+      types: ["administrative_area_level_3", "locality", "administrative_area_level_2", "administrative_area_level_1", "sublocality"],
       componentRestrictions: {
         country: ['JP'],
       }

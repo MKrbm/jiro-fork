@@ -5,9 +5,18 @@ import { PropertyCardArea } from "@/app/ui/homes/property-card-area";
 import { Box, Container, Button, useMediaQuery, useTheme } from "@mui/material";
 import { MapDetails } from '@/components/gmap/types/Camera';
 import { useParams } from "next/navigation";
+import {
+    APIProvider,
+} from '@vis.gl/react-google-maps';
 import { Location } from "@/components/gmap/types/Camera";
 import Map from "@/components/gmap/Map";
 
+
+// const interval = 100;
+const API_KEY: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
+if (!API_KEY) {
+    throw new Error("GOOGLE_MAPS_API_KEY is not set");
+}
 
 export default function Page({ params, searchParams }: { params: { locations: Location[] }, searchParams: { query: string } }) {
   const [isFullScreen, setIsFullScreen] = useState(true);
@@ -103,7 +112,9 @@ export default function Page({ params, searchParams }: { params: { locations: Lo
           style={{ width: '100%', height: '100%' }}
           loading="lazy"
         ></iframe> */}
+        <APIProvider apiKey={API_KEY}>
           <Map initialMapDetails={{center_lat: 35.6803, center_lng: 139.7690, width: 1, height: 1}} location={location} />
+				</APIProvider>
         </Box>
 
         {/* PropertyCardArea */}
