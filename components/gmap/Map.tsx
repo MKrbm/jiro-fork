@@ -14,7 +14,7 @@ import { CustomMapControl } from './map-control';
 import MapHandler from './map-handler';
 import CustomPin, { CustomPinRef } from './marker';
 
-import { MapDetails, extractMapDetails } from './types/Camera';
+import { MapDetails, extractMapDetails, pageFrom } from './types/Camera';
 import { AnyARecord } from 'dns';
 
 const API_KEY: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
@@ -60,7 +60,7 @@ const calculateHorizontalDistance = (lat: number, lon1: number, lon2: number) =>
     return Math.abs(distance);
 };
 
-const MapComponent = (initialMapDetails: MapDetails) => {
+const MapComponent = ({ initialMapDetails, pageFrom }: { initialMapDetails: MapDetails, pageFrom: pageFrom }) => {
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
     const [cameraData, setCameraData] = useState<MapDetails>(initialMapDetails); // State to store camera data
@@ -115,6 +115,7 @@ const MapComponent = (initialMapDetails: MapDetails) => {
                     background={'#ff2222'}
                     hoveredColor={'#1ea11e'}
                     glyphColor={'#fff'} 
+                    pageFrom={pageFrom}
                     scale={scale}
                     mapDetails={cameraData}
                 />

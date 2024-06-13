@@ -5,6 +5,8 @@ export type MapDetails = {
     height: number;
 };
 
+export type pageFrom = string;
+
 export function extractMapDetails(data: any): MapDetails {
     if (!data?.detail?.center?.lat || !data?.detail?.center?.lng || !data?.detail?.bounds?.south || !data?.detail?.bounds?.west || !data?.detail?.bounds?.north || !data?.detail?.bounds?.east) {
         throw new Error("Missing required map details");
