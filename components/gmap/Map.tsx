@@ -58,6 +58,7 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
         var service = new places.PlacesService(gmap);
         const callback1 = (a: google.maps.places.PlaceResult[] | null, b: google.maps.places.PlacesServiceStatus) => {
             if (a && a.length > 0) {
+                console.log("place res : ", a[0]);
                 setSelectedPlace(a[0]);
             }
             setIsServiceReady(true); // Set service ready state to true after successful service creation
@@ -78,12 +79,6 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
         };
         console.log("autocomplete res : " ,new places.Autocomplete(inputRef.current, options));
     }, [places]);
-
-    const center: google.maps.LatLngLiteral = {
-        lat: initialMapDetails.center_lat,
-        lng: initialMapDetails.center_lng,
-    };
-
 
     useEffect(() => {
         setCustomPinData({
@@ -135,7 +130,6 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
                 controlPosition={ControlPosition.TOP}
                 onPlaceSelect={setSelectedPlace}
             />
-
             <MapHandler place={selectedPlace} />
 			</>
     );
