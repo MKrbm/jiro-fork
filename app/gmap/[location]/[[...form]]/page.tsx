@@ -27,8 +27,17 @@ export default function Page({ params, searchParams }: { params: { location: Loc
   const isMdUp = useMediaQuery(theme.breakpoints.up('md')); // larger screens
 
   var location = params.location;
+
   if (location === 'home') {
     location = 'Shinjuku';
+  } else {
+    try {
+      // Attempt to decode the location
+      location = decodeURIComponent(location);
+    } catch (e) {
+      console.error('Failed to decode location:', e);
+      // If decoding fails, fall back to the original location
+    }
   }
 
   var pageFrom: pageFrom = "sale";
