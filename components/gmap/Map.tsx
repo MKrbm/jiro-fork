@@ -41,11 +41,10 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
     const places = useMapsLibrary('places');
     const gmap = useMap();
     const inputRef = useRef<HTMLInputElement>(null);
-    // var service = new places.PlacesService(gmap);
-    // console.log("service", service);
+    const [isServiceReady, setIsServiceReady] = useState(false); // State to track if PlacesService is ready
 
     useEffect(() => {
-        if (!places || !location) {
+        if (!places || !location || !gmap) {
             return;
         };
         const request : google.maps.places.FindPlaceFromQueryRequest = {
@@ -57,18 +56,16 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
             },
         };
         var service = new places.PlacesService(gmap);
-        const callback1 = (results: google.maps.places.PlaceResult[], status: google.maps.places.PlacesServiceStatus) => {
-            console.log("results", results);
-            console.log("status", status);
-            setSelectedPlace(results[0]);
+        const callback1 = (a: google.maps.places.PlaceResult[] | null, b: google.maps.places.PlacesServiceStatus) => {
+            if (a && a.length > 0) {
+                setSelectedPlace(a[0]);
+            }
+            setIsServiceReady(true); // Set service ready state to true after successful service creation
         }
         service.findPlaceFromQuery(request, callback1);
-    }, [places]);
-
+    }, [places, location, gmap]);
 
     useEffect(() => {
-        console.log("places", places);
-        console.log("inputRef", inputRef);
         if (!places || !inputRef.current) return;
 
         const options = {
@@ -79,7 +76,7 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
                 country: ['JP'],
             }
         };
-        console.log(new places.Autocomplete(inputRef.current, options));
+        console.log("autocomplete res : " ,new places.Autocomplete(inputRef.current, options));
     }, [places]);
 
     const center: google.maps.LatLngLiteral = {
@@ -89,62 +86,51 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
 
 
     useEffect(() => {
-        console.log("scale", scale);
         setCustomPinData({
             scale: scale,
             mapDetails: cameraData
         });
     }, [scale]);
 
-    // const handleCameraChange = useCallback(debounce((e: any) => {
-    //     console.log("handleCameraChange", e);
-    //     setCameraData(extractMapDetails(e.detail));
-    //     setScale(e.detail.zoom);
-    // }, interval), []);
-
-    //! TODO: Currently handleCameraChange track the camera position in real time and when onDragend is called, it will update the mapDetails and scale
-    // However, it is not efficient (questionable) if CameraData always update when the camera is moving.
-    // Ideally the CameraData only update when onDragend is called or scale changes.
-    // Also, How to make sure that scale only update when finish scrolling? Now, it will update as soon as one starts scrolling.
     const handleCameraChange = (e: any) => {
-        setCameraData(extractMapDetails(e.detail));
-        if (scale !== e.detail.zoom) {
+        if (isServiceReady) {
+            setCameraData(extractMapDetails(e.detail));
+            if (scale !== e.detail.zoom) {
             setScale(e.detail.zoom);
+            }
         }
     }
 
-
+    // Render the Map component only if isServiceReady is true
     return (
 			<>
-            <Map
-                onCameraChanged={handleCameraChange}
-                mapId={'c0d95ce429ccf25b'} // You can customize the map style by using the mapId.  
-                style={containerStyle}
-                defaultZoom={10}
-                // defaultCenter={center}
-                gestureHandling={'greedy'}
-                disableDefaultUI={true}
-                clickableIcons={false}
-                onClick={(e) => console.log("onClick", e.detail.latLng)}
-                onDragend={() => setCustomPinData({
-                    scale: scale,
-                    mapDetails: cameraData
-                })}
-                onBoundsChanged={(e) => {
-                    if (customPinRef.current) {
-                        customPinRef.current.handleClickOutside();
-                    }
-                }}
-            >
-                <CustomPin
-                    ref={customPinRef}
-                    background={'#ff2222'}
-                    hoveredColor={'#1ea11e'}
-                    glyphColor={'#fff'}
-                    scale={customPinData.scale}
-                    mapDetails={customPinData.mapDetails}
-                />
-            </Map>
+                <Map
+                    onCameraChanged={handleCameraChange}
+                    mapId={'c0d95ce429ccf25b'} // You can customize the map style by using the mapId.  
+                    style={containerStyle}
+                    defaultZoom={10}
+                    gestureHandling={'greedy'}
+                    disableDefaultUI={true}
+                    clickableIcons={false}
+                    onDragend={() => setCustomPinData({
+                        scale: scale,
+                        mapDetails: cameraData
+                    })}
+                    onBoundsChanged={(e) => {
+                        if (customPinRef.current) {
+                            customPinRef.current.handleClickOutside();
+                        }
+                    }}
+                >
+                    <CustomPin
+                        ref={customPinRef}
+                        background={'#ff2222'}
+                        hoveredColor={'#1ea11e'}
+                        glyphColor={'#fff'}
+                        scale={customPinData.scale}
+                        mapDetails={customPinData.mapDetails}
+                    />
+                </Map>
             <CustomMapControl
                 controlPosition={ControlPosition.TOP}
                 onPlaceSelect={setSelectedPlace}
