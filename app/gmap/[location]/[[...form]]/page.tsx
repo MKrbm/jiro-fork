@@ -3,10 +3,10 @@ import React, { useState, useRef, useEffect } from "react";
 // import { useRouter } from "next/router";
 import { PropertyCardArea } from "@/app/ui/homes/property-card-area";
 import { Box, Container, Button, useMediaQuery, useTheme } from "@mui/material";
-import { MapDetails } from '@/components/gmap/types/Camera';
+import { MapDetails, pageFrom } from '@/components/gmap/types/Camera';
 import { useParams } from "next/navigation";
 import {
-    APIProvider,
+  APIProvider,
 } from '@vis.gl/react-google-maps';
 import { Location } from "@/components/gmap/types/Camera";
 import Map from "@/components/gmap/Map";
@@ -15,60 +15,31 @@ import Map from "@/components/gmap/Map";
 // const interval = 100;
 const API_KEY: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 if (!API_KEY) {
-    throw new Error("GOOGLE_MAPS_API_KEY is not set");
+  throw new Error("GOOGLE_MAPS_API_KEY is not set");
 }
 
-export default function Page({ params, searchParams }: { params: { locations: Location[] }, searchParams: { query: string } }) {
+export default function Page({ params, searchParams }: { params: { location: Location, form: pageFrom[] }, searchParams: { query: string } }) {
+  console.log("params", params);
   const [isFullScreen, setIsFullScreen] = useState(true);
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down('sm')); // smartphones
   const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md')); // tablets
   const isMdUp = useMediaQuery(theme.breakpoints.up('md')); // larger screens
-  // const cityref = useRef<HTMLDivElement>(null);
-  // const places = useMapsLibrary('places');
-  // const [placeAutocomplete, setPlaceAutocomplete] =
-  //   useState<google.maps.places.Place | null>(null);
 
-  // useEffect(() => {
-  //   console.log("places", places);
-  //   if (!places) return;
+  var location = params.location;
+  if (location === 'home') {
+    location = 'Shinjuku';
+  }
 
-  //   const request = {
-  //     textQuery: 'Tacos in Mountain View',
-  //     fields: ['displayName', 'location', 'businessStatus'],
-  //     includedType: 'restaurant',
-  //     locationBias: { lat: 37.4161493, lng: -122.0812166 },
-  //     isOpenNow: true,
-  //     language: 'en-US',
-  //     maxResultCount: 8,
-  //     minRating: 3.2,
-  //     region: 'us',
-  //     useStrictTypeFiltering: false,
-  //   };
-  //   console.log("places.Place.searchByText(request)", places.Place.searchByText(request));
-  //   // setPlaceAutocomplete(places.Place.searchByText(options));
-  // }, [places]);
-
-  // useEffect(() => {
-  //   if (!places || !cityref) return;
-
-  //   const options = {
-  //     fields: ['address_components'], // NOTE: Return in specific format when specified. Check available fields https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult  
-  //     language: ['en'], // suggest in Enlgish with higher priority
-  //     types: ["(cities)"], //NOTE: list of types https://developers.google.com/maps/documentation/places/web-service/supported_types and https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service
-  //     componentRestrictions: {
-  //       country: ['JP'],
-  //     }
-  //   };
-  //   setPlaceAutocomplete(new places.Autocomplete(cityref.current, options));
-  // }, [places]);
-
-
-  var location = null;
-  if (params.locations) {
-    location = params.locations[0];
-    if (params.locations.length > 1) {
-      console.warn('Too many parameters');
+  var pageFrom: pageFrom = "sale";
+  if (params.form) {
+    if (params.form.length == 1) {
+      pageFrom = params.form[0];
+      if (pageFrom !== "sale" && pageFrom !== "rent") {
+        throw new Error(`Invalid pageFrom value: ${pageFrom}`);
+      }
+    } else {
+      throw new Error(`Invalid pageFrom value: ${pageFrom}`);
     }
   }
 
@@ -112,18 +83,18 @@ export default function Page({ params, searchParams }: { params: { locations: Lo
           style={{ width: '100%', height: '100%' }}
           loading="lazy"
         ></iframe> */}
-        <APIProvider apiKey={API_KEY}>
-          <Map 
-            initialMapDetails={{
-              center_lat: 35.6803, 
-              center_lng: 139.7690, 
-              width: 1, 
-              height: 1
-            }} 
-            location={location} 
-            pageFrom={"Rent"} 
-          />
-        </APIProvider>
+          <APIProvider apiKey={API_KEY}>
+            <Map
+              initialMapDetails={{
+                center_lat: 35.6803,
+                center_lng: 139.7690,
+                width: 1,
+                height: 1
+              }}
+              location={location}
+              pageFrom={pageFrom}
+            />
+          </APIProvider>
         </Box>
 
         {/* PropertyCardArea */}

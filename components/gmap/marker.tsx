@@ -30,11 +30,11 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 	let pinHoveredColor: string = '#F0F0F0'; // Example hover color
 	let pinTextColor: string = '#333333'; // Example text color
 
-	if (pageFrom === 'Sale') {
+	if (pageFrom === 'sale') {
 		pinBackground = '#ff2222'
 		pinHoveredColor = '#1ea11e'
 		pinTextColor = '#fff'
-	} else if (pageFrom === 'Rent') {
+	} else if (pageFrom === 'rent') {
 		pinBackground = '#66bbdd'
 		pinHoveredColor = '#ffcc22'
 		pinTextColor = '#fff'
