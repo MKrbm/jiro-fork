@@ -2,13 +2,11 @@ import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'rea
 import { Box, Typography } from '@mui/material';
 import { AdvancedMarker } from '@vis.gl/react-google-maps';
 import { fetchListings, Listing } from '@/services/listingsApi';
-import { MapDetails } from './types/Camera';
+import { MapDetails, pageFrom } from './types/Camera';
 import { PropertyCard } from '@/app/ui/homes/property-card';
 
 interface CustomPinProps {
-	background: string;
-	hoveredColor: string;
-	glyphColor: string;
+	pageFrom: pageFrom;
 	scale: number;
 	mapDetails: MapDetails;
 }
@@ -18,7 +16,7 @@ export interface CustomPinRef {
 }
 
 const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
-	const { background, hoveredColor, glyphColor, scale, mapDetails } = props;
+	const { pageFrom, scale, mapDetails } = props;
 
 	interface ListingWithRent extends Listing {
 		rentfee: number;
@@ -28,12 +26,25 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 	const [hoveredPin, setHoveredPin] = useState<number | null>(null); // State to track hovered pin
 	const [selectedListing, setSelectedListing] = useState<ListingWithRent | null>(null);
 	const [displayPropertyCard, setDisplayPropertyCard] = useState<number | null>(null);
+	let pinBackground: string = '#FFFFFF'; // Example background color
+	let pinHoveredColor: string = '#F0F0F0'; // Example hover color
+	let pinTextColor: string = '#333333'; // Example text color
+
+	if (pageFrom === 'Sale') {
+		pinBackground = '#ff2222'
+		pinHoveredColor = '#1ea11e'
+		pinTextColor = '#fff'
+	} else if (pageFrom === 'Rent') {
+		pinBackground = '#66bbdd'
+		pinHoveredColor = '#ffcc22'
+		pinTextColor = '#fff'
+	}
+
 
 	useImperativeHandle(ref, () => ({
 		handleClickOutside() {
 			setSelectedListing(null);
 			setDisplayPropertyCard(null);
-			// console.log("handleClickOutside called");
 		}
 	}));
 
@@ -105,16 +116,16 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 				display: 'inline-block',
 				'&:hover': {
 					'& .price-pin': { // Increase specificity
-						backgroundColor: `${hoveredColor}`,
+						backgroundColor: `${pinHoveredColor}`,
 						transition: 'background-color 0.3s',
 					},
 					'& .pin-triangle': { // Increase specificity
-						borderTopColor: `${hoveredColor}`,
+						borderTopColor: `${pinHoveredColor}`,
 						transition: 'border-top-color 0.3s',
 					},
 				},
 				'& .price-pin': {
-					backgroundColor: background,
+					backgroundColor: pinBackground,
 					borderRadius: '15px',
 					width: 60,
 					height: 20,
@@ -132,7 +143,7 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 					height: 0,
 					borderLeft: '4px solid transparent',
 					borderRight: '4px solid transparent',
-					borderTop: `6px solid ${background}`,
+					borderTop: `6px solid ${pinBackground}`,
 				},
 			}}
 			onMouseEnter={() => setHoveredPin(index)} // Set hovered pin
@@ -143,7 +154,7 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 				<Typography
 					variant="body2"
 					sx={{
-						color: `${glyphColor}`,
+						color: `${pinTextColor}`,
 						fontWeight: 'thin',
 						padding: '0 0.5rem',
 					}}
@@ -164,17 +175,17 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 				display: 'flex',
 				alignItems: 'center',
 				justifyContent: 'center',
-				backgroundColor: `${glyphColor}`,
-				border: `1px solid ${background}`,
+				backgroundColor: `${pinTextColor}`,
+				border: `1px solid ${pinBackground}`,
 				boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)', // Shadow effect
 				borderRadius: '50%',
 				width: 16,
 				height: 16,
 				'&:hover': {
-					border: `1px solid ${hoveredColor}`, // Change to desired hover color
+					border: `1px solid ${pinHoveredColor}`, // Change to desired hover color
 					transition: 'border-color 0.3s',
 					'& .marker-inner': {
-						background: `${hoveredColor}`, // Change to desired hover color
+						background: `${pinHoveredColor}`, // Change to desired hover color
 						transition: 'background-color 0.3s',
 					},
 				},
@@ -185,7 +196,7 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 			<Box
 				className="marker-inner"
 				sx={{
-					backgroundColor: `${background}`,
+					backgroundColor: `${pinBackground}`,
 					borderRadius: '50%',
 					width: 8,
 					height: 8,

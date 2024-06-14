@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 import { PropertyCardArea } from "@/app/ui/homes/property-card-area";
 import { Box, Container, Button, useMediaQuery, useTheme } from "@mui/material";
 import { MapDetails } from '@/components/gmap/types/Camera';
@@ -10,6 +11,7 @@ import Map from "@/components/gmap/Map";
 // };
 
 export default function Page() {
+  const pathname = usePathname();
   const [isFullScreen, setIsFullScreen] = useState(true);
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down('sm')); // smartphones
@@ -54,7 +56,7 @@ export default function Page() {
           style={{ width: '100%', height: '100%' }}
           loading="lazy"
         ></iframe> */}
-          <Map center_lat={35.6803} center_lng={139.7690} width={1} height={1} />
+          <Map initialMapDetails={{center_lat: 35.6803, center_lng: 139.7690, width: 1, height: 1}} pageFrom={pathname} />
         </Box>
         
         {/* PropertyCardArea */}

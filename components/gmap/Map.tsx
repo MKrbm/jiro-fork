@@ -5,10 +5,11 @@ import { Map } from '@vis.gl/react-google-maps';
 import { CustomMapControl } from './map-control';
 import MapHandler from './map-handler';
 import CustomPin, { CustomPinRef } from './marker';
-import { MapDetails, extractMapDetails, Location } from './types/Camera';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
 
 // const interval = 100;
+import { MapDetails, extractMapDetails, pageFrom, Location } from './types/Camera';
+import { AnyARecord } from 'dns';
 
 export type AutocompleteMode = { id: string; label: string };
 
@@ -28,7 +29,7 @@ const containerStyle: React.CSSProperties = {
 //     };
 // }
 
-const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapDetails, location: Location | null }) => {
+const MapComponent = ({ initialMapDetails, location, pageFrom }: { initialMapDetails: MapDetails, location: Location | null, pageFrom: pageFrom }) => {
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
     const [cameraData, setCameraData] = useState<MapDetails>(initialMapDetails); // State to store camera data
@@ -47,7 +48,7 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
         if (!places || !location || !gmap) {
             return;
         };
-        const request : google.maps.places.FindPlaceFromQueryRequest = {
+        const request: google.maps.places.FindPlaceFromQueryRequest = {
             fields: ['ALL'],
             query: location,
             locationBias: {
@@ -70,14 +71,14 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
         if (!places || !inputRef.current) return;
 
         const options = {
-            fields: ['address_components'], 
-            language: ['en'], 
-            types: ["(cities)"], 
+            fields: ['address_components'],
+            language: ['en'],
+            types: ["(cities)"],
             componentRestrictions: {
                 country: ['JP'],
             }
         };
-        console.log("autocomplete res : " ,new places.Autocomplete(inputRef.current, options));
+        console.log("autocomplete res : ", new places.Autocomplete(inputRef.current, options));
     }, [places]);
 
     useEffect(() => {
@@ -91,47 +92,45 @@ const MapComponent = ({ initialMapDetails, location }: { initialMapDetails: MapD
         if (isServiceReady) {
             setCameraData(extractMapDetails(e.detail));
             if (scale !== e.detail.zoom) {
-            setScale(e.detail.zoom);
+                setScale(e.detail.zoom);
             }
         }
     }
 
     // Render the Map component only if isServiceReady is true
     return (
-			<>
-                <Map
-                    onCameraChanged={handleCameraChange}
-                    mapId={'c0d95ce429ccf25b'} // You can customize the map style by using the mapId.  
-                    style={containerStyle}
-                    defaultZoom={10}
-                    gestureHandling={'greedy'}
-                    disableDefaultUI={true}
-                    clickableIcons={false}
-                    onDragend={() => setCustomPinData({
-                        scale: scale,
-                        mapDetails: cameraData
-                    })}
-                    onBoundsChanged={(e) => {
-                        if (customPinRef.current) {
-                            customPinRef.current.handleClickOutside();
-                        }
-                    }}
-                >
-                    <CustomPin
-                        ref={customPinRef}
-                        background={'#ff2222'}
-                        hoveredColor={'#1ea11e'}
-                        glyphColor={'#fff'}
-                        scale={customPinData.scale}
-                        mapDetails={customPinData.mapDetails}
-                    />
-                </Map>
+        <>
+            <Map
+                onCameraChanged={handleCameraChange}
+                mapId={'c0d95ce429ccf25b'} // You can customize the map style by using the mapId.  
+                style={containerStyle}
+                defaultZoom={10}
+                gestureHandling={'greedy'}
+                disableDefaultUI={true}
+                clickableIcons={false}
+                onDragend={() => setCustomPinData({
+                    scale: scale,
+                    mapDetails: cameraData
+                })}
+                onBoundsChanged={(e) => {
+                    if (customPinRef.current) {
+                        customPinRef.current.handleClickOutside();
+                    }
+                }}
+            >
+                <CustomPin
+                    ref={customPinRef}
+                    pageFrom={pageFrom}
+                    scale={scale}
+                    mapDetails={cameraData}
+                />
+            </Map>
             <CustomMapControl
                 controlPosition={ControlPosition.TOP}
                 onPlaceSelect={setSelectedPlace}
             />
             <MapHandler place={selectedPlace} />
-			</>
+        </>
     );
 };
 

@@ -113,8 +113,17 @@ export default function Page({ params, searchParams }: { params: { locations: Lo
           loading="lazy"
         ></iframe> */}
         <APIProvider apiKey={API_KEY}>
-          <Map initialMapDetails={{center_lat: 35.6803, center_lng: 139.7690, width: 1, height: 1}} location={location} />
-				</APIProvider>
+          <Map 
+            initialMapDetails={{
+              center_lat: 35.6803, 
+              center_lng: 139.7690, 
+              width: 1, 
+              height: 1
+            }} 
+            location={location} 
+            pageFrom={"Rent"} 
+          />
+        </APIProvider>
         </Box>
 
         {/* PropertyCardArea */}
