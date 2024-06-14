@@ -65,25 +65,32 @@ const CustomPin = forwardRef<CustomPinRef, CustomPinProps>((props, ref) => {
 
 	useEffect(() => {
 		const handleOutsideInteraction = (event: Event) => {
-			if (
-				!(event.target as HTMLElement).closest('.info-window, .marker-pin') &&
-				(selectedListing || displayPropertyCard !== null)
-			) {
-				setSelectedListing(null);
-				setDisplayPropertyCard(null);
-				console.log('Event: Outside Interaction'); // Log the event name
+			// Check if event.target is an instance of HTMLElement
+			if (event.target instanceof HTMLElement) {
+				if (
+					!event.target.closest('.info-window, .marker-pin') &&
+					(selectedListing || displayPropertyCard !== null)
+				) {
+					setSelectedListing(null);
+					setDisplayPropertyCard(null);
+				}
+			} else {
+				// If event.target is not an HTMLElement (e.g., resize event)
+				if (selectedListing || displayPropertyCard !== null) {
+					setSelectedListing(null);
+					setDisplayPropertyCard(null);
+				}
 			}
 		};
-
+	
 		// Add listeners for click and resize events
 		window.addEventListener('click', handleOutsideInteraction);
-		window.addEventListener('resize', handleOutsideInteraction);
-
+	
 		return () => {
 			window.removeEventListener('click', handleOutsideInteraction);
-			window.removeEventListener('resize', handleOutsideInteraction);
 		};
 	}, [selectedListing, displayPropertyCard]);
+
 
 
 
