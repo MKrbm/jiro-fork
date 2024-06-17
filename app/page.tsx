@@ -1,9 +1,20 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import { TextField, Button, IconButton, Typography, Box } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { Typography, Box } from "@mui/material";
 import { styled } from '@mui/system';
+import {
+    APIProvider
+} from '@vis.gl/react-google-maps';
+
+import { PlaceAutocomplete } from "@/components/gmap/autocomplete-front";
+
+
+const API_KEY: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
+
+if (!API_KEY) {
+    throw new Error("GOOGLE_MAPS_API_KEY is not set");
+}
 
 const SearchContainer = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -12,34 +23,16 @@ const SearchContainer = styled('div')(({ theme }) => ({
   margin: '0 auto',
 }));
 
-const CustomButton = styled(Button)(({ theme }) => ({
-  marginTop: theme.spacing(2),
-  borderRadius: '50px',
-  backgroundColor: 'black',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: 'gray',
-  },
-}));
 
 export default function MainComponent() {
-  const [inputValue, setInputValue] = useState("");
-  const [showCurrentLocationOption, setShowCurrentLocationOption] = useState(false);
-
-  const handleLocationClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent default event behavior
-    if (window.confirm("Are you sure you want to use your current location?")) {
-      setInputValue("Current Location");
-      console.log("Current location selected with confirmation");
-    } else {
-      console.log("Using current location cancelled");
+    const [selectedPlace, setSelectedPlace] =
+        useState<google.maps.places.PlaceResult | null>(null);
+      
+    const onPlaceSelect = (place: google.maps.places.PlaceResult | null) => {
+      console.log(place);
+      setSelectedPlace(place);
     }
-  };
 
-  const handleSearchClick = (e: React.MouseEvent) => { 
-    e.preventDefault(); // Prevent default event behavior
-    console.log("Search button clicked with value:", inputValue);
-  }
 
   return (
     <Box position="relative" bgcolor="white" height='calc(100vh - 64px)'>
@@ -55,45 +48,12 @@ export default function MainComponent() {
           Agents. Tours. Loans. Homes.
         </Typography>
         <SearchContainer>
-          <Box display="flex" alignItems="center" justifyContent="center" mt={4}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Enter an address, neighborhood, city, or ZIP code"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onFocus={() => setShowCurrentLocationOption(true)}
-              onBlur={() => setShowCurrentLocationOption(false)}
-              sx={{
-                backgroundColor: 'white',
-                borderRadius: '6px',
-                border: '1px',
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'rgba(0, 0, 0, 0.23)', // Default border color
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#391', // Border color on hover
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'rgba(96, 255, 48, 0.6)', // Border color when focused
-                    borderWidth: 4,
-                  },
-                },
-              }}
-              InputProps={{
-                endAdornment: (
-                  <IconButton onClick={handleSearchClick}>
-                    <SearchIcon />
-                  </IconButton>
-                ),
-              }}
-            />
+        <Box display="flex" alignItems="center" justifyContent="center" mt={4}>
+          <APIProvider apiKey={API_KEY}>
+            <PlaceAutocomplete onPlaceSelect={onPlaceSelect} />
+          </APIProvider>
           </Box>
         </SearchContainer>
-        <CustomButton onClick={handleLocationClick} variant="contained">
-          Use current location
-        </CustomButton>
       </Box>
     </Box>
   );
