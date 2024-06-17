@@ -1,8 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import { TextField, Button, IconButton, Typography, Box, Input } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { Typography, Box } from "@mui/material";
 import { styled } from '@mui/system';
 import {
     APIProvider
@@ -24,34 +23,8 @@ const SearchContainer = styled('div')(({ theme }) => ({
   margin: '0 auto',
 }));
 
-const CustomButton = styled(Button)(({ theme }) => ({
-  marginTop: theme.spacing(2),
-  borderRadius: '50px',
-  backgroundColor: 'black',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: 'gray',
-  },
-}));
 
 export default function MainComponent() {
-  // const [inputValue, setInputValue] = useState("");
-  // const [showCurrentLocationOption, setShowCurrentLocationOption] = useState(false);
-
-  // const handleLocationClick = (e: React.MouseEvent) => {
-  //   e.preventDefault(); // Prevent default event behavior
-  //   if (window.confirm("Are you sure you want to use your current location?")) {
-  //     // setInputValue("Current Location");
-  //     console.log("Current location selected with confirmation");
-  //   } else {
-  //     console.log("Using current location cancelled");
-  //   }
-  // };
-
-  // const handleSearchClick = (e: React.MouseEvent) => { 
-  //   e.preventDefault(); // Prevent default event behavior
-  //   // console.log("Search button clicked with value:", inputValue);
-  // }
     const [selectedPlace, setSelectedPlace] =
         useState<google.maps.places.PlaceResult | null>(null);
       
@@ -81,9 +54,6 @@ export default function MainComponent() {
           </APIProvider>
           </Box>
         </SearchContainer>
-        <CustomButton variant="contained">
-          Use current location
-        </CustomButton>
       </Box>
     </Box>
   );
